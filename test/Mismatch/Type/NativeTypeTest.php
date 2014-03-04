@@ -6,12 +6,12 @@ class NativeTypeTest extends \PHPUnit_Framework_TestCase
 {
     public static function provideIntegers()
     {
-        return array(
-            array(true, 1),
-            array(false, 1.0),
-            array(false, false),
-            array(false, '1'),
-        );
+        return [
+            [ true, 1 ],
+            [ false, 1.0 ],
+            [ false, false ],
+            [ false, '1' ],
+        ];
     }
 
     /**
@@ -25,12 +25,12 @@ class NativeTypeTest extends \PHPUnit_Framework_TestCase
 
     public static function provideFloats()
     {
-        return array(
-            array(false, 1),
-            array(true, 1.0),
-            array(false, false),
-            array(false, '1'),
-        );
+        return [
+            [ false, 1 ],
+            [ true, 1.0 ],
+            [ false, false ],
+            [ false, '1' ],
+        ];
     }
 
     /**
@@ -44,12 +44,12 @@ class NativeTypeTest extends \PHPUnit_Framework_TestCase
 
     public static function provideBooleans()
     {
-        return array(
-            array(false, 1),
-            array(false, 1.0),
-            array(true, false),
-            array(false, '1'),
-        );
+        return [
+            [ false, 1 ],
+            [ false, 1.0 ],
+            [ true, false ],
+            [ false, '1' ],
+        ];
     }
 
     /**
@@ -63,12 +63,12 @@ class NativeTypeTest extends \PHPUnit_Framework_TestCase
 
     public static function provideStrings()
     {
-        return array(
-            array(false, 1),
-            array(false, 1.0),
-            array(false, false),
-            array(true, '1'),
-        );
+        return [ 
+            [ false, 1 ],
+            [ false, 1.0 ],
+            [ false, false ],
+            [ true, '1' ],
+        ];
     }
 
     /**
@@ -82,13 +82,13 @@ class NativeTypeTest extends \PHPUnit_Framework_TestCase
 
     public static function provideNulls()
     {
-        return array(
-            array(false, 1),
-            array(false, 1.0),
-            array(false, false),
-            array(false, '1'),
-            array(true, null),
-        );
+        return [
+            [ false, 1 ],
+            [ false, 1.0 ],
+            [ false, false ],
+            [ false, '1' ],
+            [ true, null ],
+        ];
     }
 
     /**
