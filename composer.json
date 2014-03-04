@@ -8,7 +8,14 @@
             "email": "hi@drwrf.com"
         }
     ],
-    "require": {
-
+    "autoload": {
+        "psr-0": {
+            "Mismatch\\": [ "lib/", "test/" ]
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.0.*@dev",
+        "phpunit/php-code-coverage": "2.0.*@dev",
+        "phpunit/phpunit-mock-objects": "2.0.*@dev"
     }
 }
