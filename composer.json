@@ -1,0 +1,14 @@
+{
+    "name": "drwrf/mismatch",
+    "description": "a simple library for complex types",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "frwrd",
+            "email": "hi@drwrf.com"
+        }
+    ],
+    "require": {
+
+    }
+}
