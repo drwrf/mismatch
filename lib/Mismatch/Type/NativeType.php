@@ -43,6 +43,10 @@ class NativeType implements TypeInterface
                 $this->validator = 'is_string';
                 break;
 
+            case 'null':
+                $this->validator = 'is_null';
+                break;
+
             default:
                 throw new InvalidArgumentException(sprintf(
                     'The type "%s" is not a native PHP type', $type));

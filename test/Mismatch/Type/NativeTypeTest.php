@@ -80,6 +80,26 @@ class NativeTypeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $type->valid($value));
     }
 
+    public static function provideNulls()
+    {
+        return array(
+            array(false, 1),
+            array(false, 1.0),
+            array(false, false),
+            array(false, '1'),
+            array(true, null),
+        );
+    }
+
+    /**
+     * @dataProvider  provideNulls
+     */
+    public function test_valid_null($expected, $value)
+    {
+        $type = new NativeType('null');
+        $this->assertEquals($expected, $type->valid($value));
+    }
+
     /**
      * @expectedException  InvalidArgumentException
      */

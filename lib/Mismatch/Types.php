@@ -66,3 +66,4 @@ Types::register('boolean', new Type\NativeType('boolean'));
 Types::register('str',     new Type\NativeType('string'));
 Types::register('string',  new Type\NativeType('string'));
 Types::register('text',    new Type\NativeType('string'));
+Types::register('null',    new Type\NativeType('null'));
