@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "4153fce330911453a9684bab8d0275b5",
+    "hash": "bb50865900ef38e4206db0b05bec09e1",
     "packages": [
 
     ],
@@ -14,12 +14,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "3a39650a26d595a6b02c94f81a95762df6120955"
+                "reference": "40d95806978b226213c95a6071fd4d4e89d94c20"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/3a39650a26d595a6b02c94f81a95762df6120955",
-                "reference": "3a39650a26d595a6b02c94f81a95762df6120955",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/40d95806978b226213c95a6071fd4d4e89d94c20",
+                "reference": "40d95806978b226213c95a6071fd4d4e89d94c20",
                 "shasum": ""
             },
             "require": {
@@ -70,7 +70,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-03-03 05:41:36"
+            "time": "2014-03-04 18:31:51"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -648,9 +648,9 @@
         "phpunit/php-code-coverage": 20,
         "phpunit/phpunit-mock-objects": 20
     },
-    "platform": [
-
-    ],
+    "platform": {
+        "php": ">=5.4"
+    },
     "platform-dev": [
 
     ]
