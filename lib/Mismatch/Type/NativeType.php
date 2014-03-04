@@ -24,26 +24,23 @@ class NativeType implements TypeInterface
      */
     public function __construct($type)
     {
+        $this->type = $type;
+
         switch ($type) {
-            case 'int':
             case 'integer':
-                $this->type = 'integer';
+                $this->validator = 'is_integer';
                 break;
 
-            case 'double':
             case 'float':
-                $this->type = 'float';
+                $this->validator = 'is_float';
                 break;
 
-            case 'bool':
             case 'boolean':
-                $this->type = 'bool';
+                $this->validator = 'is_bool';
                 break;
 
-            case 'str':
             case 'string':
-            case 'text':
-                $this->type = 'string';
+                $this->validator = 'is_string';
                 break;
 
             default:
@@ -57,6 +54,6 @@ class NativeType implements TypeInterface
      */
     public function valid($value)
     {
-        return call_user_func('is_' . $this->type, $value);
+        return call_user_func($this->validator, $value);
     }
 }

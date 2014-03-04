@@ -40,4 +40,29 @@ class Types
 
         return $type;
     }
+
+    /**
+     * Adds a new type to the list of types.
+     *
+     * @param  string         $name
+     * @param  TypeInterface  $type
+     */
+    public static function register($name, TypeInterface $type)
+    {
+        self::$types[$name] = $type;
+    }
 }
+
+/**
+ * Registers all of the default types that Mismatch
+ * always chooses to expose.
+ */
+Types::register('int',     new Type\NativeType('integer'));
+Types::register('integer', new Type\NativeType('integer'));
+Types::register('double',  new Type\NativeType('float'));
+Types::register('float',   new Type\NativeType('float'));
+Types::register('bool',    new Type\NativeType('boolean'));
+Types::register('boolean', new Type\NativeType('boolean'));
+Types::register('str',     new Type\NativeType('string'));
+Types::register('string',  new Type\NativeType('string'));
+Types::register('text',    new Type\NativeType('string'));

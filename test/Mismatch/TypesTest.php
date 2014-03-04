@@ -11,4 +11,9 @@ class TypesTest extends \PHPUnit_Framework_TestCase
     {
         Types::invalid();
     }
+
+    public function test_register_indirectly()
+    {
+        $this->assertInstanceOf('Mismatch\Type\NativeType', Types::integer());
+    }
 }

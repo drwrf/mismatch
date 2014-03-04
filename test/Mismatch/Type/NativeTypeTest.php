@@ -19,9 +19,6 @@ class NativeTypeTest extends \PHPUnit_Framework_TestCase
      */
     public function test_valid_integer($expected, $value)
     {
-        $type = new NativeType('int');
-        $this->assertEquals($expected, $type->valid($value));
-
         $type = new NativeType('integer');
         $this->assertEquals($expected, $type->valid($value));
     }
@@ -41,9 +38,6 @@ class NativeTypeTest extends \PHPUnit_Framework_TestCase
      */
     public function test_valid_float($expected, $value)
     {
-        $type = new NativeType('double');
-        $this->assertEquals($expected, $type->valid($value));
-
         $type = new NativeType('float');
         $this->assertEquals($expected, $type->valid($value));
     }
@@ -63,9 +57,6 @@ class NativeTypeTest extends \PHPUnit_Framework_TestCase
      */
     public function test_valid_boolean($expected, $value)
     {
-        $type = new NativeType('bool');
-        $this->assertEquals($expected, $type->valid($value));
-
         $type = new NativeType('boolean');
         $this->assertEquals($expected, $type->valid($value));
     }
@@ -85,13 +76,7 @@ class NativeTypeTest extends \PHPUnit_Framework_TestCase
      */
     public function test_valid_string($expected, $value)
     {
-        $type = new NativeType('str');
-        $this->assertEquals($expected, $type->valid($value));
-
         $type = new NativeType('string');
-        $this->assertEquals($expected, $type->valid($value));
-
-        $type = new NativeType('text');
         $this->assertEquals($expected, $type->valid($value));
     }
 
