@@ -3,9 +3,56 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "bb50865900ef38e4206db0b05bec09e1",
+    "hash": "49344dc11f097a1e1cb3ec7356ca4e8b",
     "packages": [
-
+        {
+            "name": "pimple/pimple",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fabpot/Pimple.git",
+                "reference": "a9e94d9fd6cb9e8f097551a25ffec73ff2480a24"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fabpot/Pimple/zipball/a9e94d9fd6cb9e8f097551a25ffec73ff2480a24",
+                "reference": "a9e94d9fd6cb9e8f097551a25ffec73ff2480a24",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Pimple": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "Pimple is a simple Dependency Injection Container for PHP 5.3",
+            "homepage": "http://pimple.sensiolabs.org",
+            "keywords": [
+                "container",
+                "dependency injection"
+            ],
+            "time": "2014-03-06 16:54:55"
+        }
     ],
     "packages-dev": [
         {
@@ -14,12 +61,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "40d95806978b226213c95a6071fd4d4e89d94c20"
+                "reference": "f4c11959ee7333174f40fcac71bfb5bdfb4c2da4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/40d95806978b226213c95a6071fd4d4e89d94c20",
-                "reference": "40d95806978b226213c95a6071fd4d4e89d94c20",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/f4c11959ee7333174f40fcac71bfb5bdfb4c2da4",
+                "reference": "f4c11959ee7333174f40fcac71bfb5bdfb4c2da4",
                 "shasum": ""
             },
             "require": {
@@ -70,7 +117,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-03-04 18:31:51"
+            "time": "2014-03-05 01:38:51"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -261,12 +308,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "93988f2ca78d55e67a3f2535af0636f7526ab2d3"
+                "reference": "46b30b063baad27d873d5bf28b47202585ae9ca1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/93988f2ca78d55e67a3f2535af0636f7526ab2d3",
-                "reference": "93988f2ca78d55e67a3f2535af0636f7526ab2d3",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/46b30b063baad27d873d5bf28b47202585ae9ca1",
+                "reference": "46b30b063baad27d873d5bf28b47202585ae9ca1",
                 "shasum": ""
             },
             "require": {
@@ -328,7 +375,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-02-28 10:49:24"
+            "time": "2014-03-05 12:54:18"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -644,6 +691,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "pimple/pimple": 20,
         "phpunit/phpunit": 20,
         "phpunit/php-code-coverage": 20,
         "phpunit/phpunit-mock-objects": 20
