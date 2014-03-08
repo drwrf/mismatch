@@ -3,6 +3,7 @@
 namespace Mismatch;
 
 use Pimple;
+use ReflectionClass;
 
 class Metadata extends Pimple
 {
@@ -30,9 +31,14 @@ class Metadata extends Pimple
     }
 
     /**
-     * @var  string  $class
+     * @var  string
      */
     private $class;
+
+    /**
+     * @var  string
+     */
+    private $ns;
 
     /**
      * Constructor.
@@ -47,6 +53,17 @@ class Metadata extends Pimple
     }
 
     /**
+     * Adds an attribute to the Metadata instance.
+     *
+     * @param   string  $name
+     * @param   mixed   $type
+     */
+    public function __set($name, $type)
+    {
+        // TODO
+    }
+
+    /**
      * Returns the FQCN that this metadata is for.
      *
      * @return  string
@@ -54,5 +71,20 @@ class Metadata extends Pimple
     public function getClass()
     {
         return $this->class;
+    }
+
+    /**
+     * The namespace that this class is contained within.
+     *
+     * @return  string
+     */
+    public function getNamespace()
+    {
+        if (!$this->ns) {
+            $this->ns = (new ReflectionClass($this->getClass()))
+                ->getNamespaceName();
+        }
+
+        return $this->ns;
     }
 }
