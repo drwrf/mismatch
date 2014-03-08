@@ -6,7 +6,12 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->subject = new Metadata('StdClass');
+        $this->subject = Metadata::get('StdClass');
+    }
+
+    public function test_get_returnsSameInstance()
+    {
+        $this->assertSame($this->subject, Metadata::get('StdClass'));
     }
 
     public function test_getClass_returnsClass()
