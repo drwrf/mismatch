@@ -31,14 +31,9 @@ class Metadata extends Pimple
     }
 
     /**
-     * @var  string
+     * @var  ReflectionClass
      */
     private $class;
-
-    /**
-     * @var  string
-     */
-    private $ns;
 
     /**
      * Constructor.
@@ -49,7 +44,7 @@ class Metadata extends Pimple
     {
         parent::__construct();
 
-        $this->class = $class;
+        $this->class = new ReflectionClass($class);
     }
 
     /**
@@ -70,7 +65,7 @@ class Metadata extends Pimple
      */
     public function getClass()
     {
-        return $this->class;
+        return $this->class->getName();
     }
 
     /**
@@ -80,11 +75,6 @@ class Metadata extends Pimple
      */
     public function getNamespace()
     {
-        if (!$this->ns) {
-            $this->ns = (new ReflectionClass($this->getClass()))
-                ->getNamespaceName();
-        }
-
-        return $this->ns;
+        return $this->class->getNamespaceName();
     }
 }
