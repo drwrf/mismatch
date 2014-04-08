@@ -5,6 +5,34 @@ namespace Mismatch;
 use Pimple;
 use ReflectionClass;
 
+/**
+ * Mismatch\Metadata is the core of all Mismatch models.
+ *
+ * In its simplest form, the metadata container is a pimple container
+ * that allows setting services and other attributes directly on the model.
+ *
+ * The real magic, however, comes from its powerful callback system. Any
+ * trait defined on a model that defines an initializer method will have
+ * that method run with the newly constructed metadata object.
+ *
+ * This allows traits to directly hook into the construction of a new mismatch
+ * object, and is how all of the magical special powers that mismatch models
+ * have come into being.
+ *
+ * <code>
+ * trait Testable
+ * {
+ *     public static function usingTestable($metadata)
+ *     {
+ *         // This method will be run the first time a class is accessed
+ *         // using Mismatch::metadata($class). Since you have the metadata
+ *         // object (and it's an open pimple container) you can add
+ *         // or modify any part of the metadata as you please.
+ *         $metadata['test'] = true;
+ *     }
+ * }
+ * </code>
+ */
 class Metadata extends Pimple
 {
     /**
@@ -46,9 +74,8 @@ class Metadata extends Pimple
     private $traits;
 
     /**
-     * Constructor.
-     *
-     * @param   string  $class
+     * @param  string  $class
+     * @constructor
      */
     public function __construct($class)
     {
@@ -151,8 +178,7 @@ class Metadata extends Pimple
     }
 
     /**
-     * @param   string  $class
-     * @return  array
+     * @private
      */
     private function listTraits($class)
     {
@@ -166,7 +192,7 @@ class Metadata extends Pimple
     }
 
     /**
-     * @return  string
+     * @private
      */
     private function methodForTrait($trait)
     {
