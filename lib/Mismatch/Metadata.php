@@ -36,6 +36,11 @@ class Metadata extends Pimple
     private $class;
 
     /**
+     * @var  array
+     */
+    private $parents;
+
+    /**
      * Constructor.
      *
      * @param   string  $class
@@ -82,5 +87,21 @@ class Metadata extends Pimple
     public function getNamespace()
     {
         return $this->class->getNamespaceName();
+    }
+
+    /**
+     * Returns the parents of this class.
+     *
+     * @return  array
+     */
+    public function getParents()
+    {
+        if (!$this->parents) {
+            $parents = class_parents($this->getClass());
+            $parents = array_keys($parents);
+            $this->parents = $parents;
+        }
+
+        return $this->parents;
     }
 }
