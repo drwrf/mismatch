@@ -4,9 +4,16 @@ namespace Mismatch;
 
 class MetadataTest extends \PHPUnit_Framework_TestCase
 {
+    private static $initArgs;
+
     public function setUp()
     {
         $this->subject = Metadata::get('Mismatch\MetadataTest');
+    }
+
+    public function init($m)
+    {
+        self::$initArgs = $m;
     }
 
     public function test_get_returnsSameInstance()
@@ -34,18 +41,6 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
 
     public function test_constructor_callsInit()
     {
-        $this->assertSame(Metadata::get('Mismatch\Mock\Metadata'), Mock\Metadata::$calledWith);
-    }
-}
-
-namespace Mismatch\Mock;
-
-class Metadata
-{
-    public static $calledWith;
-
-    public static function init($m)
-    {
-        self::$calledWith = $m;
+        $this->assertSame($this->subject, self::$initArgs);
     }
 }
