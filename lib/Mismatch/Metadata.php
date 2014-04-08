@@ -41,6 +41,11 @@ class Metadata extends Pimple
     private $parents;
 
     /**
+     * @var  array
+     */
+    private $traits;
+
+    /**
      * Constructor.
      *
      * @param   string  $class
@@ -90,7 +95,11 @@ class Metadata extends Pimple
     }
 
     /**
-     * Returns the parents of this class.
+     * Returns the parents of the class.
+     *
+     * Parents will be returned in order of evaluation, which means
+     * that your most distant relative will be first in the list
+     * and your direct parent will be last.
      *
      * @return  array
      */
@@ -98,10 +107,52 @@ class Metadata extends Pimple
     {
         if (!$this->parents) {
             $parents = class_parents($this->getClass());
+            $parents = array_reverse($parents);
             $parents = array_keys($parents);
             $this->parents = $parents;
         }
 
         return $this->parents;
+    }
+
+    /**
+     * A list of traits that the class uses.
+     *
+     * Just like `getParents`, the list of traits is returned in order of
+     * evaluation. Traits are also recursively discovered, which means that
+     * if a trait your class uses also uses a trait, that will be included
+     * in the list.
+     *
+     * @return  array
+     */
+    public function getTraits()
+    {
+        if (!$this->traits) {
+            $traits = [];
+
+            foreach ($this->getParents() as $parent) {
+                $traits = array_merge($traits, $this->listTraits($parent));
+            }
+
+            // Include traits for the class we're actually working with.
+            $this->traits = array_merge($traits, $this->listTraits($this->getClass()));
+        }
+
+        return $this->traits;
+    }
+
+    /**
+     * @param   string  $class
+     * @return  array
+     */
+    private function listTraits($class)
+    {
+        $traits = [];
+
+        foreach (class_uses($class) as $trait) {
+            $traits = array_merge($traits, [$trait], $this->listTraits($trait));
+        }
+
+        return $traits;
     }
 }

@@ -34,9 +34,15 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
     public function test_getParents_returnsArray()
     {
         $this->assertEquals([
-            'PHPUnit_Framework_TestCase',
             'PHPUnit_Framework_Assert',
+            'PHPUnit_Framework_TestCase',
         ], $this->subject->getParents());
+    }
+
+    public function test_getTraits_returnsArray()
+    {
+        // TODO: this needs a beefier test.
+        $this->assertEquals([], $this->subject->getTraits());
     }
 
     public function test_constructor_callsInit()
