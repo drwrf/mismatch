@@ -4,49 +4,84 @@ namespace Mismatch;
 
 class MetadataTest extends \PHPUnit_Framework_TestCase
 {
-    private static $initArgs;
-
     public function setUp()
     {
-        $this->subject = Metadata::get('Mismatch\MetadataTest');
-    }
-
-    public function init($m)
-    {
-        self::$initArgs = $m;
+        $this->subject = Metadata::get('Mismatch\Metadata\Mock');
     }
 
     public function test_get_returnsSameInstance()
     {
-        $this->assertSame($this->subject, Metadata::get('Mismatch\MetadataTest'));
+        $this->assertSame($this->subject, Metadata::get('Mismatch\Metadata\Mock'));
     }
 
     public function test_getClass_returnsClass()
     {
-        $this->assertEquals('Mismatch\MetadataTest', $this->subject->getClass());
+        $this->assertEquals('Mismatch\Metadata\Mock', $this->subject->getClass());
     }
 
     public function test_getNamespace_returnsNamespace()
     {
-        $this->assertEquals('Mismatch', $this->subject->getNamespace());
+        $this->assertEquals('Mismatch\Metadata', $this->subject->getNamespace());
     }
 
     public function test_getParents_returnsArray()
     {
         $this->assertEquals([
-            'PHPUnit_Framework_Assert',
-            'PHPUnit_Framework_TestCase',
+            'Mismatch\Metadata\MockGrandParent',
+            'Mismatch\Metadata\MockParent',
         ], $this->subject->getParents());
     }
 
     public function test_getTraits_returnsArray()
     {
-        // TODO: this needs a beefier test.
-        $this->assertEquals([], $this->subject->getTraits());
+        $this->assertEquals([
+            'Mismatch\Metadata\MockNestedTrait',
+            'Mismatch\Metadata\MockTrait',
+            'Mismatch\Metadata\MockParentTrait',
+        ], $this->subject->getTraits());
     }
 
     public function test_constructor_callsInit()
     {
-        $this->assertSame($this->subject, self::$initArgs);
+        $this->assertSame($this->subject, Metadata\Mock::$calledWith);
+    }
+}
+
+namespace Mismatch\Metadata;
+
+trait MockNestedTrait
+{
+
+}
+
+trait MockTrait
+{
+    use MockNestedTrait;
+}
+
+trait MockParentTrait
+{
+
+}
+
+class MockGrandParent
+{
+    use MockTrait;
+}
+
+class MockParent extends MockGrandParent
+{
+    use MockParentTrait;
+}
+
+class Mock extends MockParent
+{
+    use MockTrait;
+
+    public static $calledWith;
+
+    public function init($m)
+    {
+        self::$calledWith = $m;
     }
 }

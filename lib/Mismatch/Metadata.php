@@ -56,6 +56,13 @@ class Metadata extends Pimple
 
         $this->class = new ReflectionClass($class);
 
+       // Allow traits to define callbacks that run when included in a model.
+        foreach ($this->getTraits() as $trait) {
+            if ($method = $this->methodForTrait($trait)) {
+                call_user_func($method, $this);
+            }
+        }
+
         // At this point, it's time to initialize the class and let it
         // declare any properties or other metadata that it wants.
         if (method_exists($class, 'init') && is_callable([$class, 'init'])) {
@@ -135,7 +142,9 @@ class Metadata extends Pimple
             }
 
             // Include traits for the class we're actually working with.
-            $this->traits = array_merge($traits, $this->listTraits($this->getClass()));
+            $traits = array_merge($traits, $this->listTraits($this->getClass()));
+            $traits = array_unique($traits);
+            $this->traits = $traits;
         }
 
         return $this->traits;
@@ -150,9 +159,25 @@ class Metadata extends Pimple
         $traits = [];
 
         foreach (class_uses($class) as $trait) {
-            $traits = array_merge($traits, [$trait], $this->listTraits($trait));
+            $traits = array_merge($traits, $this->listTraits($trait), [$trait]);
         }
 
         return $traits;
+    }
+
+    /**
+     * @return  string
+     */
+    private function methodForTrait($trait)
+    {
+        $method = substr($trait, strrpos($trait, '\\') + 1);
+        $method = 'using' . $method;
+
+        // We need both the method_exists and is_callable to ensure
+        // that the method is *actually* defined. Calling a method
+        // with __callStatic is not allowed and generally bad.
+        if (method_exists($this->getClass(), $method) && is_callable($callable)) {
+            return [$this->getClass(), $method];
+        }
     }
 }
