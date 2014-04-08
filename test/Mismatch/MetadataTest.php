@@ -23,4 +23,21 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('Mismatch', $this->subject->getNamespace());
     }
+
+    public function test_constructor_callsInit()
+    {
+        $this->assertSame(Metadata::get('Mismatch\Mock\Metadata'), Mock\Metadata::$calledWith);
+    }
+}
+
+namespace Mismatch\Mock;
+
+class Metadata
+{
+    public static $calledWith;
+
+    public static function init($m)
+    {
+        self::$calledWith = $m;
+    }
 }

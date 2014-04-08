@@ -45,6 +45,12 @@ class Metadata extends Pimple
         parent::__construct();
 
         $this->class = new ReflectionClass($class);
+
+        // At this point, it's time to initialize the class and let it
+        // declare any properties or other metadata that it wants.
+        if (method_exists($class, 'init') && is_callable([$class, 'init'])) {
+            $class::init($this);
+        }
     }
 
     /**
