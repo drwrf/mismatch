@@ -1,0 +1,34 @@
+
+    ╔██╗    ███╗   ███╗██╗███████╗███╗   ███╗ █████╗ ████████╗ ██████╗██╗  ██╗    ██╗
+    ██╔╝    ████╗ ████║██║██╔════╝████╗ ████║██╔══██╗╚══██╔══╝██╔════╝██║  ██║    ╚██╗
+    ██║     ██╔████╔██║██║███████╗██╔████╔██║███████║   ██║   ██║     ███████║     ██║
+    ██║     ██║╚██╔╝██║██║╚════██║██║╚██╔╝██║██╔══██║   ██║   ██║     ██╔══██║     ██║
+    ╚██╗    ██║ ╚═╝ ██║██║███████║██║ ╚═╝ ██║██║  ██║   ██║   ╚██████╗██║  ██║    ██╔╝
+     ╚═╝    ╚═╝     ╚═╝╚═╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝    ╚═════╝╚═╝  ╚═╝    ╚═╝
+
+     ╚      A  S I M P L E   L I B R A R Y   F O R   C O M P L E X   T Y P E S      ╝
+
+            ╚================================================================╝
+
+            Mismatch is a PHP 5.4 library designed to help you quickly model
+            your domain. Take a look, you might like it.
+
+            <?php
+
+            namespace Model;
+
+            use Mismatch;
+
+            class User
+            {
+                use Mismatch\Model;
+                use Mismatch\Timestamps;
+
+                public function init($m)
+                {
+                    $m->id        = 'Integer';
+                    $m->name      = 'String';
+                    $m->email     = 'Email';
+                    $m->addresses = 'Address[]';
+                }
+            }
