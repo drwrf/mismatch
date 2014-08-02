@@ -105,7 +105,17 @@ class Metadata extends Pimple
      */
     public function __set($name, $type)
     {
-        // TODO
+        $this['attrs']->set($name, $type);
+    }
+
+    /**
+     * Returns an attribute from the Metadata instance.
+     *
+     * @param   string  $name
+     */
+    public function __get($name)
+    {
+        return $this['attrs']->get($name);
     }
 
     /**
