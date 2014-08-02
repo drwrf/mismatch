@@ -10,7 +10,7 @@ interface AttrInterface
      * @param   Mismatch\Model  $model
      * @return  mixed
      */
-    public function getValue($model);
+    public function read($model);
 
     /**
      * Should return the value as it should be stored internally.
@@ -18,5 +18,5 @@ interface AttrInterface
      * @param   Mismatch\Model  $model
      * @return  mixed
      */
-    public function setValue($model, $value);
+    public function write($model, $value);
 }
