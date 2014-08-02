@@ -2,7 +2,7 @@
 
 namespace Mismatch;
 
-use Pimple;
+use Pimple\Container;
 use ReflectionClass;
 
 /**
@@ -33,7 +33,7 @@ use ReflectionClass;
  * }
  * </code>
  */
-class Metadata extends Pimple
+class Metadata extends Container
 {
     /**
      * @var  Metadata[]
@@ -95,6 +95,8 @@ class Metadata extends Pimple
         if (method_exists($class, 'init') && is_callable([$class, 'init'])) {
             $class::init($this);
         }
+
+        $this['attrs'] = new Attrs();
     }
 
     /**
