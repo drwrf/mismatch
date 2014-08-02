@@ -2,6 +2,8 @@
 
 namespace Mismatch;
 
+use Exception;
+
 trait Model
 {
     /**
@@ -23,6 +25,11 @@ trait Model
     protected $data;
 
     /**
+     * @var  Mismatch\Attrs
+     */
+    protected $attrs;
+
+    /**
      * Returns an attribute on the model.
      *
      * @param  string  $name
@@ -34,7 +41,11 @@ trait Model
             return $this->{'get'.$name}();
         }
 
-        return $this->read($name);
+        if ($this->has($name)) {
+            return $this->read($name);
+        }
+
+        return $this->readValue($name);
     }
 
     /**
@@ -49,18 +60,28 @@ trait Model
             return $this->{'set'.$name}($value);
         }
 
-        $this->write($name, $value);
+        if ($this->has($name)) {
+            return $this->write($name, $value);
+        }
+
+        return $this->writeValue($name, $value);
     }
 
     /**
-     * Returns whether or not the attribute has any value associated with it.
+     * Returns whether or not the model has an attribute associated with it.
      *
      * @param  string $name
      * @return bool
      */
-    public function exists($name)
+    public function has($name)
     {
-        return isset($this->data[$name]);
+        try {
+            $this->attr($name);
+        } catch (Exception $e) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -71,9 +92,7 @@ trait Model
      */
     public function read($name)
     {
-        if ($this->exists($name)) {
-            return $this->data[$name];
-        }
+        return $this->attr($name)->read($this);
     }
 
     /**
@@ -84,7 +103,7 @@ trait Model
      */
     public function write($name, $value)
     {
-        $this->data[$name] = $value;
+        $this->attr($name)->write($this, $value);
     }
 
     /**
@@ -129,5 +148,19 @@ trait Model
         $this->data[$name] = $value;
 
         return $this;
+    }
+
+    /**
+     * Returns an attribute instance for this model.
+     *
+     * @return  Mismatch\Attr\AttrInterface
+     */
+    private function attr($name)
+    {
+        if (!$this->attrs) {
+            $this->attrs = static::$metadata['attrs'];
+        }
+
+        return $this->attrs->get($name);
     }
 }

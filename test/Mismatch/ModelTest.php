@@ -2,11 +2,19 @@
 
 namespace Mismatch;
 
+use Mockery;
+use InvalidArgumentException;
+
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
+        $this->attrs = Mockery::mock('Mismatch\Attrs');
+        $this->attrs->shouldReceive('get')
+            ->andThrow(new InvalidArgumentException());
+
         $this->subject = new Model\Mock();
+        $this->subject->setAttrs($this->attrs);
     }
 
     public function test_magicSet_setsValue()
@@ -42,14 +50,19 @@ class Mock
 
     public function getFullName()
     {
-        return $this->read('firstName') . ' ' . $this->read('lastName');
+        return $this->readValue('firstName') . ' ' . $this->readValue('lastName');
     }
 
     public function setFullName($value)
     {
         $parts = explode(' ', $value);
 
-        $this->write('firstName', $parts[0]);
-        $this->write('lastName', $parts[1]);
+        $this->writeValue('firstName', $parts[0]);
+        $this->writeValue('lastName', $parts[1]);
+    }
+
+    public function setAttrs($attrs)
+    {
+        $this->attrs = $attrs;
     }
 }
