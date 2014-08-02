@@ -20,7 +20,7 @@ trait Model
     /**
      * @var  array
      */
-    protected $attrs;
+    protected $data;
 
     /**
      * Returns an attribute on the model.
@@ -58,9 +58,9 @@ trait Model
      * @param  string $name
      * @return bool
      */
-    private function exists($name)
+    public function exists($name)
     {
-        return array_key_exists($name, $this->attrs);
+        return isset($this->data[$name]);
     }
 
     /**
@@ -69,10 +69,10 @@ trait Model
      * @param  string  $name
      * @return mixed
      */
-    private function read($name)
+    public function read($name)
     {
         if ($this->exists($name)) {
-            return $this->attrs[$name];
+            return $this->data[$name];
         }
     }
 
@@ -82,8 +82,52 @@ trait Model
      * @param  string  $name
      * @param  mixed   $value
      */
-    private function write($name, $value)
+    public function write($name, $value)
     {
-        $this->attrs[$name] = $value;
+        $this->data[$name] = $value;
+    }
+
+    /**
+     * Returns whether or not a value exists in the bag of data.
+     *
+     * @param   string  $name
+     * @return  bool
+     */
+    public function hasValue($name)
+    {
+        return array_key_exists($name, $this->data);
+    }
+
+    /**
+     * Reads a value from the data on this model.
+     *
+     * This returns the bare value, without any processing by the attribute
+     * or otherwise.
+     *
+     * @param   string  $name
+     * @return  mixed
+     */
+    public function readValue($name)
+    {
+        if ($this->hasValue($name)) {
+            return $this->data[$name];
+        }
+    }
+
+    /**
+     * Writes a value to the data on this model.
+     *
+     * This writes the bare value, without any processing by the attribute
+     * or setters declared on the model.
+     *
+     * @param   string  $name
+     * @param   mixed   $value
+     * @return  mixed
+     */
+    public function writeValue($name, $value)
+    {
+        $this->data[$name] = $value;
+
+        return $this;
     }
 }
