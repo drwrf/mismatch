@@ -22,13 +22,13 @@
             class User
             {
                 use Mismatch\Model;
-                use Mismatch\Timestamps;
 
                 public function init($m)
                 {
                     $m->id        = 'Integer';
                     $m->name      = 'String';
                     $m->email     = 'Email';
+                    $m->role      = 'Role';
                     $m->addresses = 'Address[]';
                 }
             }
