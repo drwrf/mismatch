@@ -17,8 +17,10 @@ class PrimitivesTest extends \PHPUnit_Framework_TestCase
         $this->subject->firstName = 'Stephen';
         $this->subject->lastName = 'Snell';
         $this->subject->active = 1;
+        $this->subject->tags = ['murphy-brown'];
 
         $this->assertSame('Stephen Snell', $this->subject->name);
+        $this->assertSame(['murphy-brown'], $this->subject->tags);
         $this->assertTrue($this->subject->active);
     }
 
@@ -27,6 +29,7 @@ class PrimitivesTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(null, $this->subject->firstName);
         $this->assertSame(null, $this->subject->lastName);
         $this->assertSame(0, $this->subject->logins);
+        $this->assertSame([], $this->subject->tags);
         $this->assertFalse($this->subject->active);
     }
 }
@@ -45,6 +48,7 @@ class Primitives
         $m->lastName = 'String?';
         $m->logins = 'Integer';
         $m->active = 'Boolean';
+        $m->tags = 'Set';
     }
 
     private function getName()
