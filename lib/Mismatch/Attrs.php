@@ -3,6 +3,7 @@
 namespace Mismatch;
 
 use InvalidArgumentException;
+use Mismatch\Attr\AttrInterface;
 
 class Attrs
 {

@@ -82,6 +82,7 @@ class Metadata extends Container
         parent::__construct();
 
         $this->class = new ReflectionClass($class);
+        $this['attrs'] = new Attrs();
 
        // Allow traits to define callbacks that run when included in a model.
         foreach ($this->getTraits() as $trait) {
@@ -95,8 +96,6 @@ class Metadata extends Container
         if (method_exists($class, 'init') && is_callable([$class, 'init'])) {
             $class::init($this);
         }
-
-        $this['attrs'] = new Attrs();
     }
 
     /**

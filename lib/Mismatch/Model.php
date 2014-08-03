@@ -2,7 +2,7 @@
 
 namespace Mismatch;
 
-use Exception;
+use InvalidArgumentException;
 
 trait Model
 {
@@ -17,7 +17,7 @@ trait Model
     /**
      * @var  array
      */
-    protected $data;
+    protected $data = [];
 
     /**
      * @var  Mismatch\Attrs
@@ -64,7 +64,7 @@ trait Model
     {
         try {
             $this->attr($name);
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException $e) {
             return false;
         }
 
