@@ -14,11 +14,11 @@ class PrimitivesTest extends \PHPUnit_Framework_TestCase
 
     public function testSetters()
     {
-        $this->subject->firstName = 'Peeder';
-        $this->subject->lastName = 'Pam';
+        $this->subject->firstName = 'Stephen';
+        $this->subject->lastName = 'Snell';
         $this->subject->active = 1;
 
-        $this->assertSame('Peeder Pam', $this->subject->name);
+        $this->assertSame('Stephen Snell', $this->subject->name);
         $this->assertTrue($this->subject->active);
     }
 
