@@ -2,19 +2,13 @@
 
 namespace Mismatch;
 
-use Mockery;
 use Mismatch\Exception\UnknownAttrException;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->attrs = Mockery::mock('Mismatch\Attrs');
-        $this->attrs->shouldReceive('get')
-            ->andThrow(new UnknownAttrException());
-
         $this->subject = new Model\Mock();
-        $this->subject->setAttrs($this->attrs);
     }
 
     public function test_constructor_acceptsData()
@@ -68,10 +62,5 @@ class Mock
 
         $this->write('firstName', $parts[0]);
         $this->write('lastName', $parts[1]);
-    }
-
-    public function setAttrs($attrs)
-    {
-        $this->attrs = $attrs;
     }
 }
