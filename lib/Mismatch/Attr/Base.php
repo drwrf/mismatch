@@ -4,9 +4,10 @@ namespace Mismatch\Attr;
 
 abstract class Base implements AttrInterface
 {
-    protected $type;
     protected $name;
     protected $key;
+    protected $type;
+    protected $nullable = false;
 
     /**
      * @param  array  $opts

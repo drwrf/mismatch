@@ -6,12 +6,22 @@ abstract class Primitive extends Base
 {
     public function read($model)
     {
-        return $this->cast($model->readValue($this->key));
+        $value = $model->readValue($this->key);
+
+        if ($this->nullable && $value === null) {
+            return null;
+        }
+
+        return $this->cast($value);
     }
 
     public function write($model, $value)
     {
-        return $model->writeValue($this->key, $this->cast($value));
+        if (!$this->nullable || $value !== null) {
+            $value = $this->cast($value);
+        }
+
+        return $model->writeValue($this->key, $value);
     }
 
     abstract public function cast($value);

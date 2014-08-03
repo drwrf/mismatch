@@ -51,6 +51,10 @@ class Metadata extends Container
      */
     public static function get($class)
     {
+        if (is_object($class)) {
+            $class = get_class($class);
+        }
+
         if (!isset(static::$instances[$class])) {
             static::$instances[$class] = new Metadata($class);
         }

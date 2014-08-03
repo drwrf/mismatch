@@ -54,12 +54,23 @@ class Attrs
      */
     private function buildAttr($name)
     {
+        $opts = $this->parseOpts($name);
+        $class = "Mismatch\\Attr\\{$opts['type']}";
+
+        return new $class($opts);
+    }
+
+    /**
+     * @param  mixed  $name
+     */
+    private function parseOpts($name)
+    {
         $opts = $this->attrs[$name];
 
         // Allow passing a bare string for the type.
         // We can figure out the rest for the user.
         if (is_string($opts)) {
-            $opts = [ 'type' => $opts ];
+            $opts = ['type' => $opts];
         }
 
         $opts = array_merge([
@@ -67,8 +78,20 @@ class Attrs
             'key' => $name,
         ], $opts);
 
-        $class = "Mismatch\\Attr\\{$opts['type']}";
+        // Parses strings like "Foo" or "Foo?". A question mark at
+        // the end of a string indicates the type is nullable.
+        preg_match('/^([\w]+)([?]?)$/', $opts['type'], $matches);
 
-        return new $class($opts);
+        if (!$matches[1]) {
+            throw new \InvalidArgumentException();
+        }
+
+        $opts['type'] = $matches[1];
+
+        if ($matches[2]) {
+            $opts['nullable'] = true;
+        }
+
+        return $opts;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Mismatch\Integration;
 
+use Mismatch\Metadata;
 use Mismatch\Mock;
 
 class PrimitivesTest extends \PHPUnit_Framework_TestCase
@@ -17,15 +18,15 @@ class PrimitivesTest extends \PHPUnit_Framework_TestCase
         $this->subject->lastName = 'Pam';
         $this->subject->active = 1;
 
-        $this->assertEquals('Peeder Pam', $this->subject->name);
+        $this->assertSame('Peeder Pam', $this->subject->name);
         $this->assertTrue($this->subject->active);
     }
 
     public function testGetters()
     {
-        $this->assertEquals('', $this->subject->firstName);
-        $this->assertEquals('', $this->subject->lastName);
-        $this->assertEquals(0, $this->subject->logins);
+        $this->assertSame(null, $this->subject->firstName);
+        $this->assertSame(null, $this->subject->lastName);
+        $this->assertSame(0, $this->subject->logins);
         $this->assertFalse($this->subject->active);
     }
 }
@@ -40,8 +41,8 @@ class Primitives
 
     public static function init($m)
     {
-        $m->firstName = 'String';
-        $m->lastName = 'String';
+        $m->firstName = 'String?';
+        $m->lastName = 'String?';
         $m->logins = 'Integer';
         $m->active = 'Boolean';
     }
