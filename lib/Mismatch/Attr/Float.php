@@ -2,10 +2,10 @@
 
 namespace Mismatch\Attr;
 
-class Integer extends Primitive
+class Float extends Primitive
 {
     public function cast($value)
     {
-        return (int) $value;
+        return (float) $value;
     }
 }
