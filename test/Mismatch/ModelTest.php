@@ -3,7 +3,7 @@
 namespace Mismatch;
 
 use Mockery;
-use InvalidArgumentException;
+use Mismatch\Exception\UnknownAttrException;
 
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -11,7 +11,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     {
         $this->attrs = Mockery::mock('Mismatch\Attrs');
         $this->attrs->shouldReceive('get')
-            ->andThrow(new InvalidArgumentException());
+            ->andThrow(new UnknownAttrException());
 
         $this->subject = new Model\Mock();
         $this->subject->setAttrs($this->attrs);

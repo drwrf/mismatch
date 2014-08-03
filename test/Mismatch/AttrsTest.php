@@ -11,7 +11,7 @@ class AttrsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException Mismatch\Exception\UnknownAttrException
      */
     public function test_get_invalidAttr()
     {

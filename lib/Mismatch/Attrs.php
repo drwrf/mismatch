@@ -2,8 +2,8 @@
 
 namespace Mismatch;
 
-use InvalidArgumentException;
 use Mismatch\Attr\AttrInterface;
+use Mismatch\Exception\UnknownAttrException;
 
 class Attrs
 {
@@ -30,7 +30,7 @@ class Attrs
     public function get($name)
     {
         if (!$this->has($name)) {
-            throw new InvalidArgumentException();
+            throw new Exception\UnknownAttrException();
         }
 
         if (!($this->attrs[$name] instanceof AttrInterface)) {

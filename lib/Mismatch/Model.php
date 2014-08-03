@@ -2,7 +2,7 @@
 
 namespace Mismatch;
 
-use InvalidArgumentException;
+use Mismatch\Exception\UnknownAttrException;
 
 trait Model
 {
@@ -64,7 +64,7 @@ trait Model
     {
         try {
             $this->attr($name);
-        } catch (InvalidArgumentException $e) {
+        } catch (UnknownAttrException $e) {
             return false;
         }
 
