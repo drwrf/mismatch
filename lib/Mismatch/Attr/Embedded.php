@@ -8,6 +8,9 @@ class Embedded extends Base
 {
     protected $class;
 
+    /**
+     * {@inheritDoc}
+     */
     public function read($model)
     {
         $value = $model->readValue($this->key);
@@ -27,6 +30,9 @@ class Embedded extends Base
         return $value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function write($model, $value)
     {
         if (!($value instanceof $this->class)) {

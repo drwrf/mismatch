@@ -9,6 +9,9 @@ class Time extends Primitive
 {
     protected $timezone = 'UTC';
 
+    /**
+     * {@inheritDoc}
+     */
     public function cast($value)
     {
         if (!($value instanceof DateTime)) {

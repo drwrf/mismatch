@@ -16,6 +16,7 @@ interface AttrInterface
      * Should return the value as it should be stored internally.
      *
      * @param   Mismatch\Model  $model
+     * @param   mixed           $value
      * @return  mixed
      */
     public function write($model, $value);
