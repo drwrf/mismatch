@@ -17,6 +17,15 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->subject->setAttrs($this->attrs);
     }
 
+    public function test_constructor_acceptsData()
+    {
+        $subject = new Model\Mock([
+            'foo' => 'bar'
+        ]);
+
+        $this->assertEquals('bar', $subject->foo);
+    }
+
     public function test_magicSet_setsValue()
     {
         $this->subject->username = 'happy-boy-22';

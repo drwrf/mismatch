@@ -25,6 +25,14 @@ trait Model
     protected $attrs;
 
     /**
+     * @param   array  $data
+     */
+    public function __construct($data = [])
+    {
+        $this->data = $data;
+    }
+
+    /**
      * Returns an attribute on the model.
      *
      * @param  string  $name
