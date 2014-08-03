@@ -7,16 +7,11 @@ use Exception;
 trait Model
 {
     /**
-     * @var  Metadata
+     * @return  Mismatch\Metadata
      */
-    private static $metadata;
-
-    /**
-     * @param  Metadata
-     */
-    public static function usingModel($m)
+    public static function metadata()
     {
-        static::$metadata = $m;
+        return Metadata::get(get_called_class());
     }
 
     /**
@@ -41,11 +36,7 @@ trait Model
             return $this->{'get'.$name}();
         }
 
-        if ($this->has($name)) {
-            return $this->read($name);
-        }
-
-        return $this->readValue($name);
+        return $this->read($name);
     }
 
     /**
@@ -60,11 +51,7 @@ trait Model
             return $this->{'set'.$name}($value);
         }
 
-        if ($this->has($name)) {
-            return $this->write($name, $value);
-        }
-
-        return $this->writeValue($name, $value);
+        return $this->write($name, $value);
     }
 
     /**
@@ -92,7 +79,11 @@ trait Model
      */
     public function read($name)
     {
-        return $this->attr($name)->read($this);
+        if ($this->has($name)) {
+            return $this->attr($name)->read($this);
+        }
+
+        return $this->readValue($name);
     }
 
     /**
@@ -103,7 +94,11 @@ trait Model
      */
     public function write($name, $value)
     {
-        $this->attr($name)->write($this, $value);
+        if ($this->has($name)) {
+            $this->attr($name)->write($this, $value);
+        }
+
+        return $this->writeValue($name, $value);
     }
 
     /**
@@ -158,7 +153,7 @@ trait Model
     private function attr($name)
     {
         if (!$this->attrs) {
-            $this->attrs = static::$metadata['attrs'];
+            $this->attrs = static::metadata()['attrs'];
         }
 
         return $this->attrs->get($name);

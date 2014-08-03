@@ -50,15 +50,15 @@ class Mock
 
     public function getFullName()
     {
-        return $this->readValue('firstName') . ' ' . $this->readValue('lastName');
+        return $this->read('firstName') . ' ' . $this->read('lastName');
     }
 
     public function setFullName($value)
     {
         $parts = explode(' ', $value);
 
-        $this->writeValue('firstName', $parts[0]);
-        $this->writeValue('lastName', $parts[1]);
+        $this->write('firstName', $parts[0]);
+        $this->write('lastName', $parts[1]);
     }
 
     public function setAttrs($attrs)
