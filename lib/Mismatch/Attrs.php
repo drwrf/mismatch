@@ -5,6 +5,11 @@ namespace Mismatch;
 use Mismatch\Attr\AttrInterface;
 use Mismatch\Exception\UnknownAttrException;
 
+/**
+ * Houses a set of Mismatch\Attr\AttrInterface's.
+ *
+ * This class mana
+ */
 class Attrs
 {
     /**
@@ -55,7 +60,7 @@ class Attrs
     private function buildAttr($name)
     {
         $opts = $this->parseOpts($name);
-        $class = "Mismatch\\Attr\\{$opts['type']}";
+        $class = $opts['type'];
 
         return new $class($opts);
     }
@@ -80,13 +85,21 @@ class Attrs
 
         // Parses strings like "Foo" or "Foo?". A question mark at
         // the end of a string indicates the type is nullable.
-        preg_match('/^([\w]+)([?]?)$/', $opts['type'], $matches);
+        preg_match("/^([\w\\\]+)([?]?)$/", $opts['type'], $matches);
 
         if (!$matches[1]) {
             throw new \InvalidArgumentException();
         }
 
         $opts['type'] = $matches[1];
+        $class = "Mismatch\\Attr\\{$opts['type']}";
+
+        if (!is_subclass_of($class, 'Mismatch\Attr\AttrInterface')) {
+            $opts['class'] = $opts['type'];
+            $opts['type'] = 'Mismatch\Attr\Embedded';
+        } else {
+            $opts['type'] = $class;
+        }
 
         if ($matches[2]) {
             $opts['nullable'] = true;
