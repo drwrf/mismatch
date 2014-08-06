@@ -13,7 +13,7 @@ class Embedded extends Base
      */
     public function read($model)
     {
-        $value = $model->readValue($this->key);
+        $value = $this->readValue($model);
 
         if ($this->nullable && $value === null) {
             return null;
@@ -24,7 +24,7 @@ class Embedded extends Base
             // to the value the next time around. We don't want to
             // create many instances of the same value object.
             $value = new $this->class($value);
-            $model->writeValue($this->key, $value);
+            $this->writeValue($model, $value);
         }
 
         return $value;
@@ -39,6 +39,6 @@ class Embedded extends Base
             throw new InvalidArgumentException();
         }
 
-        return $model->writeValue($this->key, $value);
+        return $this->writeValue($model, $value);
     }
 }

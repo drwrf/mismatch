@@ -9,7 +9,7 @@ abstract class Primitive extends Base
      */
     public function read($model)
     {
-        $value = $model->readValue($this->key);
+        $value = $this->readValue($model);
 
         if ($this->nullable && $value === null) {
             return null;
@@ -27,7 +27,7 @@ abstract class Primitive extends Base
             $value = $this->cast($value);
         }
 
-        return $model->writeValue($this->key, $value);
+        return $this->writeValue($model, $value);
     }
 
     /**
