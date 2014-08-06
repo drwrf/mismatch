@@ -4,7 +4,20 @@ namespace Mismatch\Attr;
 
 abstract class Base implements AttrInterface
 {
+    /**
+     * The name of the attribute, which dictates the key that it is
+     * retrieved and stored under.
+     *
+     * @var  string  $name
+     */
     protected $name;
+
+    /**
+     * Whether or not the attribute is nullable. If it is true, then
+     * "null"s written to the model will be written untouched.
+     *
+     * @param  bool  $name
+     */
     protected $nullable = false;
 
     /**
