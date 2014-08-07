@@ -5,14 +5,14 @@ namespace Mismatch\ORM\Expression;
 class Expression
 {
     /**
-     * @var  mixed  $values
+     * @var  mixed  $expr
      */
-    private $values;
+    protected $expr;
 
     /**
-     * @var  mixed  string
+     * @var  mixed  $values
      */
-    private $expr;
+    protected $values;
 
     /**
      * @param  string  $expr
