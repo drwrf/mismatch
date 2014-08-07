@@ -15,21 +15,21 @@ trait Model
     }
 
     /**
-     * @var  array
+     * @var  Mismatch\Entity
      */
-    protected $data = [];
+    public $entity;
 
     /**
      * @var  Mismatch\Attrs
      */
-    protected $attrs;
+    private $attrs;
 
     /**
      * @param   array  $data
      */
     public function __construct($data = [])
     {
-        $this->data = $data;
+        $this->entity = new Entity($data);
     }
 
     /**
@@ -91,7 +91,7 @@ trait Model
             return $this->attr($name)->read($this);
         }
 
-        return $this->readValue($name);
+        return $this->entity->read($name);
     }
 
     /**
@@ -103,54 +103,10 @@ trait Model
     public function write($name, $value)
     {
         if ($this->has($name)) {
-            $this->attr($name)->write($this, $value);
+            return $this->attr($name)->write($this, $value);
         }
 
-        return $this->writeValue($name, $value);
-    }
-
-    /**
-     * Returns whether or not a value exists in the bag of data.
-     *
-     * @param   string  $name
-     * @return  bool
-     */
-    public function hasValue($name)
-    {
-        return array_key_exists($name, $this->data);
-    }
-
-    /**
-     * Reads a value from the data on this model.
-     *
-     * This returns the bare value, without any processing by the attribute
-     * or otherwise.
-     *
-     * @param   string  $name
-     * @return  mixed
-     */
-    public function readValue($name)
-    {
-        if ($this->hasValue($name)) {
-            return $this->data[$name];
-        }
-    }
-
-    /**
-     * Writes a value to the data on this model.
-     *
-     * This writes the bare value, without any processing by the attribute
-     * or setters declared on the model.
-     *
-     * @param   string  $name
-     * @param   mixed   $value
-     * @return  mixed
-     */
-    public function writeValue($name, $value)
-    {
-        $this->data[$name] = $value;
-
-        return $this;
+        return $this->entity->write($name, $value);
     }
 
     /**

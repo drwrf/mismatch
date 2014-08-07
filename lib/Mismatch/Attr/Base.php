@@ -38,7 +38,7 @@ abstract class Base implements AttrInterface
      */
     protected function readValue($model)
     {
-        return $model->readValue($this->name);
+        return $model->entity->read($this->name);
     }
 
     /**
@@ -50,7 +50,7 @@ abstract class Base implements AttrInterface
      */
     protected function writeValue($model, $value)
     {
-        $model->writeValue($this->name, $value);
+        $model->entity->write($this->name, $value);
 
         return $this;
     }
