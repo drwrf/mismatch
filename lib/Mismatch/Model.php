@@ -73,7 +73,7 @@ trait Model
      */
     public function __isset($name)
     {
-        return $this->has($name) || $this->entity->has($name);
+        return $this->hasAttr($name) || $this->entity->has($name);
     }
 
     /**
@@ -84,7 +84,7 @@ trait Model
      */
     private function read($name)
     {
-        if ($this->has($name)) {
+        if ($this->hasAttr($name)) {
             return $this->attr($name)->read($this);
         }
 
@@ -99,7 +99,7 @@ trait Model
      */
     private function write($name, $value)
     {
-        if ($this->has($name)) {
+        if ($this->hasAttr($name)) {
             return $this->attr($name)->write($this, $value);
         }
 
@@ -112,7 +112,7 @@ trait Model
      * @param  string $name
      * @return bool
      */
-    private function has($name)
+    private function hasAttr($name)
     {
         try {
             $this->attr($name);
