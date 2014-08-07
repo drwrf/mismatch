@@ -72,7 +72,7 @@ class Entity
         // smarter change tracking this way.
         if (array_key_exists($name, $this->data) && $this->data[$name] === $value) {
             unset($this->changes[$name]);
-            return;
+            return $this;
         }
 
         $this->changes[$name] = $value;
