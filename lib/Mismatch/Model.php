@@ -68,7 +68,7 @@ trait Model
      * @param  string $name
      * @return bool
      */
-    public function has($name)
+    private function has($name)
     {
         try {
             $this->attr($name);
@@ -85,7 +85,7 @@ trait Model
      * @param  string  $name
      * @return mixed
      */
-    public function read($name)
+    private function read($name)
     {
         if ($this->has($name)) {
             return $this->attr($name)->read($this);
@@ -100,7 +100,7 @@ trait Model
      * @param  string  $name
      * @param  mixed   $value
      */
-    public function write($name, $value)
+    private function write($name, $value)
     {
         if ($this->has($name)) {
             return $this->attr($name)->write($this, $value);
