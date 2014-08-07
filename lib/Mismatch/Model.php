@@ -63,6 +63,20 @@ trait Model
     }
 
     /**
+     * Returns whether or not a value is set on the model.
+     *
+     * In all cases, this will return true so long as the attribute
+     * is set on the model, regardless of whether or not it's null.
+     *
+     * @param  string  $name
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return $this->has($name) || $this->entity->has($name);
+    }
+
+    /**
      * Returns whether or not the model has an attribute associated with it.
      *
      * @param  string $name

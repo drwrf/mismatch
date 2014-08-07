@@ -41,6 +41,17 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Whoopsi', $this->subject->firstName);
         $this->assertEquals('Goldberg', $this->subject->lastName);
     }
+
+    public function test_magicIsset_returnsFalseForUnknownProps()
+    {
+        $this->assertFalse(isset($this->subject->invalid));
+    }
+
+    public function test_magicIsset_returnsTrueForNull()
+    {
+        $this->subject->firstName = null;
+        $this->assertTrue(isset($this->subject->firstName));
+    }
 }
 
 namespace Mismatch\Model;
