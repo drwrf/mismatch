@@ -15,6 +15,11 @@ class Composite
     private $expr = [];
 
     /**
+     * @var  bool
+     */
+    private $compiled = false;
+
+    /**
      * @param  string  $alias
      */
     public function __construct($alias = null)
@@ -27,84 +32,107 @@ class Composite
      */
     public function __toString()
     {
-        return current($this->compile());
+        return $this->getExpression();
+    }
+
+    /**
+     * Combines all expressions passed using an AND.
+     *
+     * @param  string|array  $expr
+     * @param  array         $vals
+     * @return $this
+     */
+    public function all($expr, array $vals = [])
+    {
+        $this->expr = array_merge($this->expr, $this->addConditions('AND', $expr, $vals));
+
+        return $this;
+    }
+
+    /**
+     * Combines all expressions passed using an AND.
+     *
+     * @param  string|array  $expr
+     * @param  array         $vals
+     * @return $this
+     */
+    public function any($expr, array $vals = [])
+    {
+        $this->expr = array_merge($this->expr, $this->addConditions('OR', $expr, $vals));
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getExpression()
+    {
+        return $this->compile()[0];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValues()
+    {
+        return $this->compile()[1];
     }
 
     /**
      * Compiles the expression into a string and a set of params.
      *
-     * @return [$expr, $params]
+     * @return [$expr, $vals]
      */
-    public function compile()
+    private function compile()
     {
-        $string = '';
-        $params = [];
+        if (!$this->compiled) {
+            $expr = '';
+            $vals = [];
 
-        foreach ($this->expr as $expr) {
-            if ($string) {
-                $string .= ' ' . $expr['type'] . ' ';
+            foreach ($this->expr as $part) {
+                if ($expr) {
+                    $expr .= ' ' . $part['type'] . ' ';
+                }
+
+                $expr .= $part['expr'];
+                $vals = array_merge($vals, $part['vals']);
             }
 
-            $string .= $expr['expr'];
-            $params = array_merge($params, $expr['bind']);
+            $this->compiled = [$expr, $vals];
         }
 
-        return [$string, $params];
-    }
-
-    /**
-     * Combines all expressions passed using an AND.
-     *
-     * @param  string|array  $conds
-     * @param  array         $params
-     * @return $this
-     */
-    public function all($conds, array $params = [])
-    {
-        $this->expr = array_merge($this->expr, $this->addConditions('AND', $conds, $params));
-
-        return $this;
-    }
-
-    /**
-     * Combines all expressions passed using an AND.
-     *
-     * @param  string|array  $conds
-     * @param  array         $params
-     * @return $this
-     */
-    public function any($conds, array $params = [])
-    {
-        $this->expr = array_merge($this->expr, $this->addConditions('OR', $conds, $params));
-
-        return $this;
+        return $this->compiled;
     }
 
     /**
      * @return  array
      */
-    private function addConditions($type, $conds, array $params)
+    private function addConditions($type, $expr, array $vals)
     {
         $ret = [];
 
+        // Ensure we mark the need for recompilation.
+        $this->compiled = false;
+
         // Passing a simple string like 'foo.bar = ?', [$bar] should
         // work fine, so we can skip the complicated array syntax.
-        if (is_string($conds)) {
+        if (is_string($expr)) {
             return [[
-                'expr' => $conds,
-                'bind' => $params,
+                'expr' => $expr,
+                'vals' => $vals,
                 'type' => $type,
             ]];
         }
 
-        foreach ($conds as $column => $value) {
+        foreach ($expr as $column => $value) {
             // Allow passing a literal string, which is useful for
             // completely literal expressions (such as those used for joins).
             if (is_int($column)) {
                 $ret[] = [
                     'expr' => $value,
                     'type' => $type,
-                    'bind' => [],
+                    'vals' => [],
                 ];
 
                 continue;
@@ -124,7 +152,7 @@ class Composite
 
             $ret[] = [
                 'expr' => $value->getExpression($column),
-                'bind' => $value->getValues(),
+                'vals' => $value->getValues(),
                 'type' => $type,
             ];
         }

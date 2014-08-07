@@ -13,19 +13,23 @@ class CompositeTest extends \PHPUnit_Framework_TestCase
 
     public function test_string()
     {
-        list($expr, $binds) = $this->subject->all('name = ?', ['test'])
-                                            ->any('name is null')
-                                            ->compile();
+        $this->subject->all('name = ?', ['test'])
+                      ->any('name is null');
 
-        $this->assertEquals('name = ? OR name is null', $expr);
-        $this->assertEquals(['test'], $binds);
+        $expr = $this->subject->getExpression();
+        $binds = $this->subject->getValues();
+
+        $this->assertEquals('name = ? OR name is null', $this->subject->getExpression());
+        $this->assertEquals(['test'], $this->subject->getValues());
     }
 
     public function test_arrayEq()
     {
-        list($expr, $binds) = $this->subject->all([ 'name' => 'test' ])
-                                            ->any([ 'foo' => 'bar' ])
-                                            ->compile();
+        $this->subject->all([ 'name' => 'test' ])
+                      ->any([ 'foo' => 'bar' ]);
+
+        $expr = $this->subject->getExpression();
+        $binds = $this->subject->getValues();
 
         $this->assertEquals('test.name = ? OR test.foo = ?', $expr);
         $this->assertEquals(['test', 'bar'], $binds);
@@ -33,9 +37,11 @@ class CompositeTest extends \PHPUnit_Framework_TestCase
 
     public function test_arrayIn()
     {
-        list($expr, $binds) = $this->subject->all([ 'name' => ['test']])
-                                            ->any([ 'foo' => ['bar']])
-                                            ->compile();
+        $this->subject->all([ 'name' => ['test']])
+                      ->any([ 'foo' => ['bar']]);
+
+        $expr = $this->subject->getExpression();
+        $binds = $this->subject->getValues();
 
         $this->assertEquals('test.name IN ? OR test.foo IN ?', $expr);
         $this->assertEquals([['test'], ['bar']], $binds);
@@ -43,9 +49,11 @@ class CompositeTest extends \PHPUnit_Framework_TestCase
 
     public function test_comparator()
     {
-        list($expr, $binds) = $this->subject->all([ 'name' => new Eq('test')])
-                                            ->any([ 'foo' => new Eq('bar')])
-                                            ->compile();
+        $this->subject->all([ 'name' => new Eq('test')])
+                      ->any([ 'foo' => new Eq('bar')]);
+
+        $expr = $this->subject->getExpression();
+        $binds = $this->subject->getValues();
 
         $this->assertEquals('test.name = ? OR test.foo = ?', $expr);
         $this->assertEquals(['test', 'bar'], $binds);
