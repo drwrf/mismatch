@@ -77,23 +77,6 @@ trait Model
     }
 
     /**
-     * Returns whether or not the model has an attribute associated with it.
-     *
-     * @param  string $name
-     * @return bool
-     */
-    private function has($name)
-    {
-        try {
-            $this->attr($name);
-        } catch (UnknownAttrException $e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Reads a bare attribute on the model.
      *
      * @param  string  $name
@@ -121,6 +104,23 @@ trait Model
         }
 
         return $this->entity->write($name, $value);
+    }
+
+    /**
+     * Returns whether or not the model has an attribute associated with it.
+     *
+     * @param  string $name
+     * @return bool
+     */
+    private function has($name)
+    {
+        try {
+            $this->attr($name);
+        } catch (UnknownAttrException $e) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
