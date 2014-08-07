@@ -9,6 +9,10 @@ abstract class Primitive extends Base
      */
     public function read($model)
     {
+        if (!$this->hasValue($model)) {
+            return !$this->nullable ? $this->getDefault() : null;
+        }
+
         $value = $this->readValue($model);
 
         if ($this->nullable && $value === null) {
@@ -28,6 +32,16 @@ abstract class Primitive extends Base
         }
 
         return $this->writeValue($model, $value);
+    }
+
+    /**
+     * Should return the default value for the type.
+     *
+     * @return mixed
+     */
+    public function getDefault()
+    {
+        return $this->default;
     }
 
     /**

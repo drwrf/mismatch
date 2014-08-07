@@ -4,6 +4,8 @@ namespace Mismatch\Attr;
 
 class Boolean extends Primitive
 {
+    protected $default = false;
+
     /**
      * {@inheritDoc}
      */

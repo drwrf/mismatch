@@ -7,6 +7,7 @@ use DateTimeZone as TZ;
 
 class Time extends Primitive
 {
+    protected $default = 'now';
     protected $timezone = 'UTC';
 
     /**
@@ -19,5 +20,13 @@ class Time extends Primitive
         }
 
         return $value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDefault()
+    {
+        return new DateTime($this->default, new TZ($this->timezone));
     }
 }

@@ -21,6 +21,13 @@ abstract class Base implements AttrInterface
     protected $nullable = false;
 
     /**
+     * A default value for the attribute.
+     *
+     * @param  mixed  $default
+     */
+    protected $default;
+
+    /**
      * @param  array  $opts
      */
     public function __construct(array $opts)
@@ -53,5 +60,16 @@ abstract class Base implements AttrInterface
         $model->entity->write($this->name, $value);
 
         return $this;
+    }
+
+    /**
+     * Returns whether or not the model has a value for the attribute.
+     *
+     * @param   Mismatch\Model  $model
+     * @return  bool
+     */
+    protected function hasValue($model)
+    {
+        return $model->entity->has($this->name);
     }
 }

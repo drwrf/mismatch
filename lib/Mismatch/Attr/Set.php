@@ -4,6 +4,8 @@ namespace Mismatch\Attr;
 
 class Set extends Primitive
 {
+    protected $default = [];
+
     /**
      * {@inheritDoc}
      */
