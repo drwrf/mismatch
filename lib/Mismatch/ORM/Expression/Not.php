@@ -19,7 +19,7 @@ class Not extends Expression
     /**
      * {@inheritDoc}
      */
-    public function getExpression($column)
+    public function getExpression($column = null)
     {
         return sprintf('NOT (%s)', $this->expr->getExpression($column));
     }

@@ -2,7 +2,7 @@
 
 namespace Mismatch\ORM\Expression;
 
-class Composite
+class Composite implements ExpressionInterface
 {
     /**
      * @var  string
@@ -66,7 +66,7 @@ class Composite
     /**
      * {@inheritDoc}
      */
-    public function getExpression()
+    public function getExpression($column = null)
     {
         return $this->compile()[0];
     }

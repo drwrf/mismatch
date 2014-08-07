@@ -2,7 +2,7 @@
 
 namespace Mismatch\ORM\Expression;
 
-class Expression
+class Expression implements ExpressionInterface
 {
     /**
      * @var  mixed  $expr
@@ -25,18 +25,15 @@ class Expression
     }
 
     /**
-     * Returns the expression provided by the comparator.
-     *
-     * @param   string  $column
-     * @return  string
+     * {@inheritDoc}
      */
-    public function getExpression($column)
+    public function getExpression($column = null)
     {
         return sprintf($this->expr, $column);
     }
 
     /**
-     * @return  array
+     * {@inheritDoc}
      */
     public function getValues()
     {
