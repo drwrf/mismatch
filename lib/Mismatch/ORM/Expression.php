@@ -6,18 +6,12 @@ use Mismatch\ORM\Expression as Q;
 
 function all($conds, $params = [])
 {
-    $expr = new Q\Composite();
-    $expr->all($conds, $params);
-
-    return $expr;
+    return new Q\All($conds, $params);
 }
 
 function any($conds, $params = [])
 {
-    $expr = new Q\Composite();
-    $expr->any($conds, $params);
-
-    return $expr;
+    return new Q\Any($conds, $params);
 }
 
 function expr($expr, $binds = [])

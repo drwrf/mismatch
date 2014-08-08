@@ -20,14 +20,6 @@ class Composite implements ExpressionInterface
     private $compiled = false;
 
     /**
-     * @param  string  $alias
-     */
-    public function __construct($alias = null)
-    {
-        $this->alias = $alias;
-    }
-
-    /**
      * @return  string
      */
     public function __toString()
@@ -77,6 +69,21 @@ class Composite implements ExpressionInterface
     public function getBinds()
     {
         return $this->compile()[1];
+    }
+
+    /**
+     * Allows setting a table alias to use for all columns passed
+     * to hash-based expressions.
+     *
+     * @param  string  $alias
+     * @return $this
+     */
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+        $this->compiled = false;
+
+        return $this;
     }
 
     /**

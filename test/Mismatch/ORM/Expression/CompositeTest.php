@@ -8,7 +8,8 @@ class CompositeTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->subject = new Composite('test');
+        $this->subject = new Composite();
+        $this->subject->setAlias('test');
     }
 
     public function test_string()

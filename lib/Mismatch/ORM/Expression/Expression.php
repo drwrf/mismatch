@@ -18,7 +18,7 @@ class Expression implements ExpressionInterface
      * @param  string  $expr
      * @param  array   $binds
      */
-    public function __construct($expr, array $binds)
+    public function __construct($expr, array $binds = [])
     {
         $this->binds = $binds;
         $this->expr = $expr;
