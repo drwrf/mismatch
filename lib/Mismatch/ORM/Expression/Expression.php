@@ -10,24 +10,24 @@ class Expression implements ExpressionInterface
     protected $expr;
 
     /**
-     * @var  mixed  $values
+     * @var  mixed  $binds
      */
-    protected $values;
+    protected $binds;
 
     /**
      * @param  string  $expr
-     * @param  array   $values
+     * @param  array   $binds
      */
-    public function __construct($expr, array $values)
+    public function __construct($expr, array $binds)
     {
-        $this->values = $values;
+        $this->binds = $binds;
         $this->expr = $expr;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getExpression($column = null)
+    public function getExpr($column = null)
     {
         return sprintf($this->expr, $column);
     }
@@ -35,8 +35,8 @@ class Expression implements ExpressionInterface
     /**
      * {@inheritDoc}
      */
-    public function getValues()
+    public function getBinds()
     {
-        return $this->values;
+        return $this->binds;
     }
 }

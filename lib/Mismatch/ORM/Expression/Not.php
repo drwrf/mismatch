@@ -13,14 +13,14 @@ class Not extends Expression
             $expr = is_array($expr) ? new In($expr) : new Eq($expr);
         }
 
-        parent::__construct($this->expr, $expr->getValues());
+        parent::__construct($this->expr, $expr->getBinds());
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getExpression($column = null)
+    public function getExpr($column = null)
     {
-        return sprintf('NOT (%s)', $this->expr->getExpression($column));
+        return sprintf('NOT (%s)', $this->expr->getExpr($column));
     }
 }

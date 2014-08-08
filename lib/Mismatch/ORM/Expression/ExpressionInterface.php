@@ -10,12 +10,12 @@ interface ExpressionInterface
      * @param   string  $column
      * @return  string
      */
-    public function getExpression($column = null);
+    public function getExpr($column = null);
 
     /**
      * Returns the values that should be bound to the expression.
      *
      * @return  array
      */
-    public function getValues();
+    public function getBinds();
 }

@@ -32,19 +32,19 @@ class Composite implements ExpressionInterface
      */
     public function __toString()
     {
-        return $this->getExpression();
+        return $this->getExpr();
     }
 
     /**
      * Combines all expressions passed using an AND.
      *
      * @param  string|array  $expr
-     * @param  array         $vals
+     * @param  array         $binds
      * @return $this
      */
-    public function all($expr, array $vals = [])
+    public function all($expr, array $binds = [])
     {
-        $this->expr = array_merge($this->expr, $this->addConditions('AND', $expr, $vals));
+        $this->expr = array_merge($this->expr, $this->addConditions('AND', $expr, $binds));
 
         return $this;
     }
@@ -53,12 +53,12 @@ class Composite implements ExpressionInterface
      * Combines all expressions passed using an AND.
      *
      * @param  string|array  $expr
-     * @param  array         $vals
+     * @param  array         $binds
      * @return $this
      */
-    public function any($expr, array $vals = [])
+    public function any($expr, array $binds = [])
     {
-        $this->expr = array_merge($this->expr, $this->addConditions('OR', $expr, $vals));
+        $this->expr = array_merge($this->expr, $this->addConditions('OR', $expr, $binds));
 
         return $this;
     }
@@ -66,7 +66,7 @@ class Composite implements ExpressionInterface
     /**
      * {@inheritDoc}
      */
-    public function getExpression($column = null)
+    public function getExpr($column = null)
     {
         return $this->compile()[0];
     }
@@ -74,7 +74,7 @@ class Composite implements ExpressionInterface
     /**
      * {@inheritDoc}
      */
-    public function getValues()
+    public function getBinds()
     {
         return $this->compile()[1];
     }
@@ -82,13 +82,13 @@ class Composite implements ExpressionInterface
     /**
      * Compiles the expression into a string and a set of params.
      *
-     * @return [$expr, $vals]
+     * @return [$expr, $binds]
      */
     private function compile()
     {
         if (!$this->compiled) {
             $expr = '';
-            $vals = [];
+            $binds = [];
 
             foreach ($this->expr as $part) {
                 if ($expr) {
@@ -96,10 +96,10 @@ class Composite implements ExpressionInterface
                 }
 
                 $expr .= $part['expr'];
-                $vals = array_merge($vals, $part['vals']);
+                $binds = array_merge($binds, $part['binds']);
             }
 
-            $this->compiled = [$expr, $vals];
+            $this->compiled = [$expr, $binds];
         }
 
         return $this->compiled;
@@ -108,7 +108,7 @@ class Composite implements ExpressionInterface
     /**
      * @return  array
      */
-    private function addConditions($type, $expr, array $vals)
+    private function addConditions($type, $expr, array $binds)
     {
         $ret = [];
 
@@ -120,7 +120,7 @@ class Composite implements ExpressionInterface
         if (is_string($expr)) {
             return [[
                 'expr' => $expr,
-                'vals' => $vals,
+                'binds' => $binds,
                 'type' => $type,
             ]];
         }
@@ -132,7 +132,7 @@ class Composite implements ExpressionInterface
                 $ret[] = [
                     'expr' => $value,
                     'type' => $type,
-                    'vals' => [],
+                    'binds' => [],
                 ];
 
                 continue;
@@ -151,8 +151,8 @@ class Composite implements ExpressionInterface
             }
 
             $ret[] = [
-                'expr' => $value->getExpression($column),
-                'vals' => $value->getValues(),
+                'expr' => $value->getExpr($column),
+                'binds' => $value->getBinds(),
                 'type' => $type,
             ];
         }
