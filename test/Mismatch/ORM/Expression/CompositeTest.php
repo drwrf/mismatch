@@ -26,8 +26,8 @@ class CompositeTest extends \PHPUnit_Framework_TestCase
 
     public function test_arrayEq()
     {
-        $this->subject->all([ 'name' => 'test' ])
-                      ->any([ 'foo' => 'bar' ]);
+        $this->subject->all(['name' => 'test' ])
+                      ->any(['foo' => 'bar' ]);
 
         $expr = $this->subject->getExpr();
         $binds = $this->subject->getBinds();
@@ -38,8 +38,8 @@ class CompositeTest extends \PHPUnit_Framework_TestCase
 
     public function test_arrayIn()
     {
-        $this->subject->all([ 'name' => ['test']])
-                      ->any([ 'foo' => ['bar']]);
+        $this->subject->all(['name' => ['test']])
+                      ->any(['foo' => ['bar']]);
 
         $expr = $this->subject->getExpr();
         $binds = $this->subject->getBinds();
@@ -50,8 +50,8 @@ class CompositeTest extends \PHPUnit_Framework_TestCase
 
     public function test_comparator()
     {
-        $this->subject->all([ 'name' => new Eq('test')])
-                      ->any([ 'foo' => new Eq('bar')]);
+        $this->subject->all(['name' => new Eq('test')])
+                      ->any(['foo' => new Eq('bar')]);
 
         $expr = $this->subject->getExpr();
         $binds = $this->subject->getBinds();
