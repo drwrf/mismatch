@@ -15,6 +15,14 @@ trait Model
     }
 
     /**
+     * Hook for when this trait is used on a class.
+     */
+    public static function usingModel($m)
+    {
+        $m['attrs'] = new Attrs();
+    }
+
+    /**
      * @var  Mismatch\Entity
      */
     public $entity;

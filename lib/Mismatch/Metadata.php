@@ -4,6 +4,7 @@ namespace Mismatch;
 
 use Pimple\Container;
 use ReflectionClass;
+use BadMethodCallException;
 
 /**
  * Mismatch\Metadata is the core of all Mismatch models.
@@ -86,7 +87,6 @@ class Metadata extends Container
         parent::__construct();
 
         $this->class = new ReflectionClass($class);
-        $this['attrs'] = new Attrs();
 
        // Allow traits to define callbacks that run when included in a model.
         foreach ($this->getTraits() as $trait) {
@@ -110,17 +110,15 @@ class Metadata extends Container
      */
     public function __set($name, $type)
     {
-        $this['attrs']->set($name, $type);
-    }
+        if (!isset($this['attrs'])) {
+            throw new BadMethodCallException(
+                'You must set an "attrs" key on your metadata before trying ' .
+                'to add attributes. This may be as simple as adding a ' .
+                '"use Mismatch\Model" or ensuring that you have used it ' .
+                'before another trait that requires the "attrs" key ');
+        }
 
-    /**
-     * Returns an attribute from the Metadata instance.
-     *
-     * @param   string  $name
-     */
-    public function __get($name)
-    {
-        return $this['attrs']->get($name);
+        $this['attrs']->set($name, $type);
     }
 
     /**
@@ -213,6 +211,8 @@ class Metadata extends Container
     {
         $method = substr($trait, strrpos($trait, '\\') + 1);
         $method = 'using' . $method;
+        $callable = [$this->getClass(), $method];
+
 
         // We need both the method_exists and is_callable to ensure
         // that the method is *actually* defined. Calling a method
