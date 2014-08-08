@@ -20,5 +20,10 @@ trait ORM
         $m['pk'] = function ($m) {
             return 'id';
         };
+
+        // The connection the mode will use to talk to the database.
+        $m['connection'] = function ($m) {
+            return ORM\Connector::connect($m['credentials']);
+        };
     }
 }
