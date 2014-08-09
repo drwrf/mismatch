@@ -132,7 +132,7 @@ class Query
      *
      * <code>
      *     // Aliases are supported as array keys
-     *     $query->select(['column', 'alias' => 'column']);
+     *     $query->select(['column', 'column' => 'alias']);
      * </code>
      *
      * @param  array  $columns
