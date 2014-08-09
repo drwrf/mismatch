@@ -29,6 +29,11 @@ class Result implements Iterator
     protected $results = [];
 
     /**
+     * @var  Mismatch\ORM\Mapper  The mapper to use for results
+     */
+    private $mapper;
+
+    /**
      * @param  Statement
      */
     public function __construct(Statement $stmt)
@@ -45,6 +50,20 @@ class Result implements Iterator
     public function fetchAs($mode)
     {
         $this->mode = $mode;
+
+        return $this;
+    }
+
+    /**
+     * Set the mapper to use for turning databae results
+     * into Mismatch models.
+     *
+     * @param   Mismatch\ORM\Mapper
+     * @return  $this
+     */
+    public function setMapper($mapper)
+    {
+        $this->mapper = $mapper;
 
         return $this;
     }
@@ -87,6 +106,10 @@ class Result implements Iterator
             return $result;
         }
 
+        if ($this->mode === 'mapped') {
+            return $this->mapResult($result);
+        }
+
         throw new InvalidArgumentException(sprintf('Invalid mode "%s".', $mode));
     }
 
@@ -104,5 +127,18 @@ class Result implements Iterator
     public function next()
     {
         ++$this->position;
+    }
+
+    /**
+     * @param   array  $result
+     * @return  mixed
+     */
+    private function mapResult(array $result)
+    {
+        if (!$this->mapper) {
+            throw new LogicException('Cannot map result if a mapper is not set.');
+        }
+
+        return $this->mapper->deserialize($result);
     }
 }

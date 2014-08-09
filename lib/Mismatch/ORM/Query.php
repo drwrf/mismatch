@@ -31,6 +31,11 @@ class Query
     private $parts = [];
 
     /**
+     * @var  Mismatch\ORM\Mapper  The mapper to use for results
+     */
+    private $mapper;
+
+    /**
      * Constructor.
      *
      * @param   Doctrine\DBAL\Connection  $conn
@@ -123,6 +128,11 @@ class Query
 
         $result = $this->conn->executeQuery($query, $params, $types);
         $result = new Result($result);
+
+        if ($this->mapper) {
+            $result->setMapper($this->mapper);
+            $result->fetchAs('mapped');
+        }
 
         return $result;
     }
@@ -279,6 +289,20 @@ class Query
     public function order(array $columns)
     {
         return $this->addPart('order', $columns);
+    }
+
+    /**
+     * Set the mapper to use for turning databae results
+     * into Mismatch models.
+     *
+     * @param   Mismatch\ORM\Mapper
+     * @return  $this
+     */
+    public function setMapper($mapper)
+    {
+        $this->mapper = $mapper;
+
+        return $this;
     }
 
     /**

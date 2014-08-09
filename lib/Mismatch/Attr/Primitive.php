@@ -42,6 +42,8 @@ abstract class Primitive extends Base
         if (array_key_exists($this->key, $result)) {
             return [$this->name => $result[$this->key]];
         }
+
+        return [];
     }
 
     /**

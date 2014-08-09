@@ -30,11 +30,21 @@ trait ORM
         $m['query'] = $m->factory(function($m) {
             $query = new $m['query:class']($m['connection'], $m['pk']);
             $query->from([$m['table'] => $m['name']]);
+            $query->setMapper($m['mapper']);
+
             return $query;
         });
 
         // The class to use for query building.
         $m['query:class'] = 'Mismatch\ORM\Query';
+
+        // The mapper used to serialize and deserialize records.
+        $m['mapper'] = function($m) {
+            return new $m['mapper:class']($m->getClass(), $m['attrs']);
+        };
+
+        // The class to use for mapping results.
+        $m['mapper:class'] = 'Mismatch\ORM\Mapper';
     }
 
     /**
