@@ -102,6 +102,13 @@ class Attrs implements IteratorAggregate
             $opts = ['type' => $opts];
         }
 
+        // Allow passing an array where the first value, regardless
+        // of key, is the attribute type to use. This looks pretty.
+        if (is_array($opts) && is_int(key($opts))) {
+            $opts['type'] = $opts[key($opts)];
+            unset($opts[key($opts)]);
+        }
+
         $opts = array_merge([
             'name' => $name,
             'key' => $name,
