@@ -13,6 +13,14 @@ abstract class Base implements AttrInterface
     protected $name;
 
     /**
+     * The key of the attribute, which dictates the place that it is
+     * stored and retrieved from externally.
+     *
+     * @var  string
+     */
+    protected $key;
+
+    /**
      * Whether or not the attribute is nullable. If it is true, then
      * "null"s written to the model will be written untouched.
      *
@@ -34,6 +42,13 @@ abstract class Base implements AttrInterface
     {
         foreach ($opts as $key => $value) {
             $this->$key = $value;
+        }
+
+        // While all attributes write to the entity using their
+        // name, it is important for serialization purposes that
+        // attributes know what key they're stored under.
+        if (!isset($this->key)) {
+            $this->key = $this->name;
         }
     }
 
