@@ -4,6 +4,7 @@ namespace Mismatch;
 
 use Mismatch\Attr\AttrInterface;
 use Mismatch\Exception\UnknownAttrException;
+use InvalidArgumentException;
 use IteratorAggregate;
 use ArrayIterator;
 
@@ -17,7 +18,7 @@ class Attrs implements IteratorAggregate
     /**
      * @var  array
      */
-    private $attrs;
+    private $attrs = [];
 
     /**
      * @return  string
@@ -119,18 +120,10 @@ class Attrs implements IteratorAggregate
         preg_match("/^([\w\\\]+)([?]?)$/", $opts['type'], $matches);
 
         if (!$matches[1]) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
-        $opts['type'] = $matches[1];
-        $class = "Mismatch\\Attr\\{$opts['type']}";
-
-        if (!is_subclass_of($class, 'Mismatch\Attr\AttrInterface')) {
-            $opts['class'] = $opts['type'];
-            $opts['type'] = 'Mismatch\Attr\Embedded';
-        } else {
-            $opts['type'] = $class;
-        }
+        $opts['type'] = "Mismatch\\Attr\\{$matches[1]}";
 
         if ($matches[2]) {
             $opts['nullable'] = true;
