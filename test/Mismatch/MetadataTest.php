@@ -80,7 +80,7 @@ class Mock extends MockParent
 
     public static $calledWith;
 
-    public function init($m)
+    public static function init($m)
     {
         self::$calledWith = $m;
     }
