@@ -20,4 +20,13 @@ interface AttrInterface
      * @return  mixed
      */
     public function write($model, $value);
+
+    /**
+     * Should extract the necessary keys from the result and
+     * turn it into an array that the model can understand.
+     *
+     * @param   array  $result
+     * @return  array
+     */
+    public function deserialize(array $result);
 }

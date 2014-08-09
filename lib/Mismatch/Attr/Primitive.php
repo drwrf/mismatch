@@ -35,6 +35,16 @@ abstract class Primitive extends Base
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function deserialize(array $result)
+    {
+        if (array_key_exists($this->key, $result)) {
+            return [$this->name => $result[$this->key]];
+        }
+    }
+
+    /**
      * Should return the default value for the type.
      *
      * @return mixed
