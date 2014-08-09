@@ -28,8 +28,11 @@ trait ORM
 
         // The query builder used for SELECTs
         $m['query'] = $m->factory(function($m) {
-            return new ORM\Query($m['connection'], $m['pk']);
+            return new $m['query:class']($m['connection'], $m['pk']);
         });
+
+        // The class to use for query building.
+        $m['query:class'] = 'Mismatch\ORM\Query';
     }
 
     /**
