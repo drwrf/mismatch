@@ -23,6 +23,7 @@
         "phpunit/phpunit": "4.0.*@dev",
         "phpunit/php-code-coverage": "2.0.*@dev",
         "phpunit/phpunit-mock-objects": "2.0.*@dev",
-        "mockery/mockery": "0.9"
+        "mockery/mockery": "0.9",
+        "d11wtq/boris": "dev-master"
     }
 }
