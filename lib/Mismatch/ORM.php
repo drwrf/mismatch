@@ -21,14 +21,16 @@ trait ORM
             return 'id';
         };
 
-        // The connection the mode will use to talk to the database.
+        // The connection the model will use to talk to the database.
         $m['connection'] = $m->factory(function ($m) {
             return ORM\Connector::connect($m['credentials']);
         });
 
         // The query builder used for SELECTs
         $m['query'] = $m->factory(function($m) {
-            return new $m['query:class']($m['connection'], $m['pk']);
+            $query = new $m['query:class']($m['connection'], $m['pk']);
+            $query->from([$m['table'] => $m['name']]);
+            return $query;
         });
 
         // The class to use for query building.
