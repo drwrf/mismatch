@@ -13,6 +13,29 @@ class Attrs implements IteratorAggregate
     /**
      * @var  array
      */
+    private static $types = [
+        'Integer' => ['type' => 'Mismatch\\Attr\\Integer'],
+        'Float'   => ['type' => 'Mismatch\\Attr\\Float'],
+        'String'  => ['type' => 'Mismatch\\Attr\\String'],
+        'Boolean' => ['type' => 'Mismatch\\Attr\\Boolean'],
+        'Time'    => ['type' => 'Mismatch\\Attr\\Time'],
+        'Set'     => ['type' => 'Mismatch\\Attr\\Set'],
+    ];
+
+    /**
+     * Registers a type.
+     *
+     * @param  string  $name
+     * @param  array   $opts
+     */
+    public static function register($name, array $opts)
+    {
+        static::$types[$name] = $opts;
+    }
+
+    /**
+     * @var  array
+     */
     private $attrs = [];
 
     /**
@@ -112,16 +135,31 @@ class Attrs implements IteratorAggregate
 
         // Parses strings like "Foo" or "Foo?". A question mark at
         // the end of a string indicates the type is nullable.
-        preg_match("/^([\w\\\]+)([?]?)$/", $opts['type'], $matches);
+        preg_match("/^(?<type>[\w\\\]+)(?<set>\[\])?(?<null>\?)?$/", $opts['type'], $matches);
 
-        if (!$matches[1]) {
+        if (empty($matches['type'])) {
             throw new InvalidArgumentException();
         }
 
-        $opts['type'] = "Mismatch\\Attr\\{$matches[1]}";
+        $opts['type'] = $matches['type'];
 
-        if ($matches[2]) {
+        if (!empty($matches['set'])) {
+            $opts['type'] = 'Set';
+            $opts['each'] = $matches['type'];
+        }
+
+        if (!empty($matches['null'])) {
             $opts['nullable'] = true;
+        }
+
+        // Resolve the type with the already declared types
+        if (!empty(static::$types[$opts['type']])) {
+            $opts = array_merge($opts, static::$types[$opts['type']]);
+        }
+
+        // Also resolve the "each" type, in the case of sets.
+        if (isset($opts['each']) && isset(static::$types[$opts['each']])) {
+            $opts['each'] = static::$types[$opts['each']]['type'];
         }
 
         return $opts;
