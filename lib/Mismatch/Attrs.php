@@ -8,11 +8,6 @@ use InvalidArgumentException;
 use IteratorAggregate;
 use ArrayIterator;
 
-/**
- * Houses a set of Mismatch\Attr\AttrInterface's.
- *
- * This class mana
- */
 class Attrs implements IteratorAggregate
 {
     /**
