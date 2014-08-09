@@ -29,5 +29,4 @@ class Inflector extends Base
             return $column;
         }
     }
-
 }
