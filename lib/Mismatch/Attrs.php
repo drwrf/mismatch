@@ -20,6 +20,14 @@ class Attrs implements IteratorAggregate
     private $attrs;
 
     /**
+     * @return  string
+     */
+    public function __toString()
+    {
+        return sprintf('%s:%s', get_class($this), json_encode(array_keys($this->attrs)));
+    }
+
+    /**
      * @param  string  $name
      * @param  mixed   $type
      */
@@ -37,7 +45,7 @@ class Attrs implements IteratorAggregate
     public function get($name)
     {
         if (!$this->has($name)) {
-            throw new Exception\UnknownAttrException();
+            throw new Exception\UnknownAttrException($this, $name);
         }
 
         if (!($this->attrs[$name] instanceof AttrInterface)) {

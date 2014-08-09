@@ -23,6 +23,14 @@ class Entity
     }
 
     /**
+     * @return  string
+     */
+    public function __toString()
+    {
+        return json_encode(array_merge($this->data, $this->changes));
+    }
+
+    /**
      * Reads a value from the entity.
      *
      * @param   string  $name

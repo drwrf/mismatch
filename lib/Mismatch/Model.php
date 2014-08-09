@@ -85,6 +85,14 @@ trait Model
     }
 
     /**
+     * @return  string
+     */
+    public function __toString()
+    {
+        return sprintf('%s:%s', get_class($this), md5(spl_object_hash($this)));
+    }
+
+    /**
      * Reads a bare attribute on the model.
      *
      * @param  string  $name
@@ -96,7 +104,11 @@ trait Model
             return $this->attr($name)->read($this);
         }
 
-        return $this->entity->read($name);
+        if ($this->entity->has($name)) {
+            return $this->entity->read($name);
+        }
+
+        throw new UnknownAttrException($this, $name);
     }
 
     /**
