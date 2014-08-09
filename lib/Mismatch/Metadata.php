@@ -219,7 +219,6 @@ class Metadata extends Container
         $method = 'using' . $method;
         $callable = [$this->getClass(), $method];
 
-
         // We need both the method_exists and is_callable to ensure
         // that the method is *actually* defined. Calling a method
         // with __callStatic is not allowed and generally bad.
