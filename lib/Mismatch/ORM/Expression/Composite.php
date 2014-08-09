@@ -2,7 +2,7 @@
 
 namespace Mismatch\ORM\Expression;
 
-use Mismatch\ORM\Query;
+use Mismatch\Inflector;
 
 class Composite implements ExpressionInterface
 {
@@ -148,7 +148,7 @@ class Composite implements ExpressionInterface
             }
 
             // Try and provide a table alias if possible.
-            $column = Query::columnize($column, $this->alias);
+            $column = Inflector::columnize($column, $this->alias);
 
             // And automatically detect an IN if possible.
             if (is_array($value)) {

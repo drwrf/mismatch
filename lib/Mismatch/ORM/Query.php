@@ -2,6 +2,7 @@
 
 namespace Mismatch\ORM;
 
+use Mismatch\Inflector;
 use Mismatch\ORM\Expression\Composite;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
@@ -9,22 +10,6 @@ use DomainException;
 
 class Query
 {
-    /**
-     * Adds a source to a column if necessary.
-     *
-     * @param   string  $column
-     * @param   string  $source
-     * @return  string
-     */
-    public static function columnize($column, $source)
-    {
-        if ($source && !strpos($column, '.') && !strpos($column, '(')) {
-            return $source. '.' . $column;
-        } else {
-            return $column;
-        }
-    }
-
     /**
      * @var  Mismatch\Connection  The connection to make requests against.
      */
@@ -493,7 +478,7 @@ class Query
             switch ($type) {
                 // Turn SELECTs into table.column AS alias
                 case 'select':
-                    $source = static::columnize($source, $this->alias);
+                    $source = Inflector::columnize($source, $this->alias);
                     $parts[] = $this->alias($source, $alias);
                     break;
 
@@ -504,12 +489,12 @@ class Query
 
                 // Turn ORDER BYs into table.column ASC/DESC
                 case 'order':
-                    $parts[] = static::columnize($source, $this->alias) . ' ' . strtoupper($alias);
+                    $parts[] = Inflector::columnize($source, $this->alias) . ' ' . strtoupper($alias);
                     break;
 
                 // Turn GROUP BYs into table.column
                 case 'group':
-                    $parts[] = static::columnize($source, $this->alias);
+                    $parts[] = Inflector::columnize($source, $this->alias);
                     break;
             }
         }
