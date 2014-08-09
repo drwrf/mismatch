@@ -90,7 +90,9 @@ class Metadata extends Container
 
         // Expose the class name as the "name" of the metadata
         // container. This can be changed if necessary.
-        $this['name'] = $this->class->getName();
+        $this['name'] = function() {
+            return Inflector::tableize($this->class->getName());
+        };
 
         // Allow traits to define callbacks that run when included in a model.
         foreach ($this->getTraits() as $trait) {
