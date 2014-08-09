@@ -2,6 +2,8 @@
 
 namespace Mismatch\ORM\Expression;
 
+use Mismatch\ORM\Query;
+
 class Composite implements ExpressionInterface
 {
     /**
@@ -91,7 +93,7 @@ class Composite implements ExpressionInterface
      *
      * @return [$expr, $binds]
      */
-    private function compile()
+    public function compile()
     {
         if (!$this->compiled) {
             $expr = '';
@@ -146,7 +148,7 @@ class Composite implements ExpressionInterface
             }
 
             // Try and provide a table alias if possible.
-            $column = $this->columnize($column, $this->alias);
+            $column = Query::columnize($column, $this->alias);
 
             // And automatically detect an IN if possible.
             if (is_array($value)) {
@@ -165,14 +167,5 @@ class Composite implements ExpressionInterface
         }
 
         return $ret;
-    }
-
-    private function columnize($column, $source)
-    {
-        if ($source && !strpos($column, '.') && !strpos($column, '(')) {
-            return $source. '.' . $column;
-        } else {
-            return $column;
-        }
     }
 }
