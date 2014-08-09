@@ -121,7 +121,7 @@ class Metadata extends Container
                 'You must set an "attrs" key on your metadata before trying ' .
                 'to add attributes. This may be as simple as adding a ' .
                 '"use Mismatch\Model" or ensuring that you have used it ' .
-                'before another trait that requires the "attrs" key ');
+                'before another trait that requires the "attrs" key.');
         }
 
         $this['attrs']->set($name, $type);
