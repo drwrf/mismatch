@@ -4,13 +4,15 @@ namespace Mismatch;
 
 use Mismatch\Attr\AttrInterface;
 use Mismatch\Exception\UnknownAttrException;
+use IteratorAggregate;
+use ArrayIterator;
 
 /**
  * Houses a set of Mismatch\Attr\AttrInterface's.
  *
  * This class mana
  */
-class Attrs
+class Attrs implements IteratorAggregate
 {
     /**
      * @var  array
@@ -52,6 +54,20 @@ class Attrs
     public function has($name)
     {
         return isset($this->attrs[$name]);
+    }
+
+    /**
+     * @return  ArrayIterator
+     */
+    public function getIterator()
+    {
+        $attrs = [];
+
+        foreach ($this->attrs as $key => $val) {
+            $attrs[$key] = $this->get($key);
+        }
+
+        return new ArrayIterator($attrs);
     }
 
     /**
