@@ -14,23 +14,23 @@ class Attrs implements IteratorAggregate
      * @var  array
      */
     private static $types = [
-        'Integer' => ['type' => 'Mismatch\\Attr\\Integer'],
-        'Float'   => ['type' => 'Mismatch\\Attr\\Float'],
-        'String'  => ['type' => 'Mismatch\\Attr\\String'],
-        'Boolean' => ['type' => 'Mismatch\\Attr\\Boolean'],
-        'Time'    => ['type' => 'Mismatch\\Attr\\Time'],
-        'Set'     => ['type' => 'Mismatch\\Attr\\Set'],
+        'Integer' => 'Mismatch\\Attr\\Integer',
+        'Float'   => 'Mismatch\\Attr\\Float',
+        'String'  => 'Mismatch\\Attr\\String',
+        'Boolean' => 'Mismatch\\Attr\\Boolean',
+        'Time'    => 'Mismatch\\Attr\\Time',
+        'Set'     => 'Mismatch\\Attr\\Set',
     ];
 
     /**
      * Registers a type.
      *
      * @param  string  $name
-     * @param  array   $opts
+     * @param  string  $class
      */
-    public static function register($name, array $opts)
+    public static function register($name, $class)
     {
-        static::$types[$name] = $opts;
+        static::$types[$name] = $class;
     }
 
     /**
@@ -64,7 +64,7 @@ class Attrs implements IteratorAggregate
     public function get($name)
     {
         if (!$this->has($name)) {
-            throw new Exception\UnknownAttrException($this, $name);
+            throw new UnknownAttrException($this, $name);
         }
 
         if (!($this->attrs[$name] instanceof AttrInterface)) {
@@ -133,38 +133,49 @@ class Attrs implements IteratorAggregate
             'key' => $name,
         ], $opts);
 
-        return $this->resolveType($opts);
+        return $this->parseType($opts);
     }
 
     /**
      * @param   array $opts
      * @return  array
      */
-    private function resolveType(array $opts)
+    private function parseType(array $opts)
     {
         if (empty($opts['type'])) {
             throw new InvalidArgumentException();
         }
 
-        // Parses strings like "Foo" or "Foo?". A question mark at
-        // the end of a string indicates the type is nullable.
-        preg_match("/^(?<type>[\w\\\]+)(?<null>\?)?$/", $opts['type'], $matches);
+        $pattern = "/^(?<type>[\w\\\]+)(\[(?<each>[\w\\\]+)\])?(?<null>\?)?$/";
 
-        if (empty($matches['type'])) {
+        if (false === preg_match($pattern, $opts['type'], $matches)) {
             throw new InvalidArgumentException();
         }
 
-        $opts['type'] = $matches['type'];
+        // Resolve the type with the already declared types.
+        $opts['type'] = $this->resolveType($matches['type']);
 
+        // We can parse types that include sub-types, like "Foo[Bar]".
+        // This is useful for types that return a list of types.
+        if (!empty($matches['each'])) {
+            $opts['each'] = $this->resolveType($matches['each']);
+        }
+
+        // Parse strings like "Foo" or "Foo?". A question mark at
+        // the end of a string indicates the type is nullable.
         if (!empty($matches['null'])) {
             $opts['nullable'] = true;
         }
 
-        // Resolve the type with the already declared types
-        if (!empty(static::$types[$opts['type']])) {
-            $opts = array_merge($opts, static::$types[$opts['type']]);
-        }
-
         return $opts;
+    }
+
+    /**
+     * @param  string  $type
+     * @return string
+     */
+    private function resolveType($type)
+    {
+        return isset(static::$types[$type]) ? static::$types[$type] : $type;
     }
 }
