@@ -133,20 +133,28 @@ class Attrs implements IteratorAggregate
             'key' => $name,
         ], $opts);
 
+        return $this->resolveType($opts);
+    }
+
+    /**
+     * @param   array $opts
+     * @return  array
+     */
+    private function resolveType(array $opts)
+    {
+        if (empty($opts['type'])) {
+            throw new InvalidArgumentException();
+        }
+
         // Parses strings like "Foo" or "Foo?". A question mark at
         // the end of a string indicates the type is nullable.
-        preg_match("/^(?<type>[\w\\\]+)(?<set>\[\])?(?<null>\?)?$/", $opts['type'], $matches);
+        preg_match("/^(?<type>[\w\\\]+)(?<null>\?)?$/", $opts['type'], $matches);
 
         if (empty($matches['type'])) {
             throw new InvalidArgumentException();
         }
 
         $opts['type'] = $matches['type'];
-
-        if (!empty($matches['set'])) {
-            $opts['type'] = 'Set';
-            $opts['each'] = $matches['type'];
-        }
 
         if (!empty($matches['null'])) {
             $opts['nullable'] = true;
@@ -155,11 +163,6 @@ class Attrs implements IteratorAggregate
         // Resolve the type with the already declared types
         if (!empty(static::$types[$opts['type']])) {
             $opts = array_merge($opts, static::$types[$opts['type']]);
-        }
-
-        // Also resolve the "each" type, in the case of sets.
-        if (isset($opts['each']) && isset(static::$types[$opts['each']])) {
-            $opts['each'] = static::$types[$opts['each']]['type'];
         }
 
         return $opts;

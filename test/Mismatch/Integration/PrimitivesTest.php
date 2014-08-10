@@ -55,7 +55,7 @@ class Primitives
         $m->logins = 'Integer';
         $m->active = 'Boolean';
         $m->rating = 'Float';
-        $m->tags = 'String[]';
+        $m->tags = 'Set';
         $m->created = 'Time';
     }
 
