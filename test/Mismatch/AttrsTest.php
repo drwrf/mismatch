@@ -2,11 +2,14 @@
 
 namespace Mismatch;
 
+use Mockery;
+
 class AttrsTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->subject = new Attrs();
+        $this->metadata = Mockery::mock('Mismatch\Metadata');
+        $this->subject = new Attrs($this->metadata);
         $this->subject->set('integer', 'Integer');
     }
 

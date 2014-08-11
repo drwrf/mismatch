@@ -19,7 +19,9 @@ trait Model
      */
     public static function usingModel($m)
     {
-        $m['attrs'] = new Attrs();
+        $m['attrs'] = function($m) {
+            return new Attrs($m);
+        };
     }
 
     /**

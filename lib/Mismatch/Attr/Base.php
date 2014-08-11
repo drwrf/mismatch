@@ -36,6 +36,13 @@ abstract class Base implements AttrInterface
     protected $default;
 
     /**
+     * The metadata of the model owning this attribute.
+     *
+     * @var  Mismatch\Metadata
+     */
+    protected $metadata;
+
+    /**
      * @param  array  $opts
      */
     public function __construct(array $opts = [])
@@ -44,12 +51,23 @@ abstract class Base implements AttrInterface
             $this->$key = $value;
         }
 
+        // Allow hooking into the options process.
+        $this->initOpts();
+
         // While all attributes write to the entity using their
         // name, it is important for serialization purposes that
         // attributes know what key they're stored under.
         if (!isset($this->key)) {
             $this->key = $this->name;
         }
+    }
+
+    /**
+     * Hook for setting options after construction.
+     */
+    protected function initOpts()
+    {
+        // Nothing to do by default.
     }
 
     /**

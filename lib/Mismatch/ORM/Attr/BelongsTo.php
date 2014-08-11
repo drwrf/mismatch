@@ -2,100 +2,45 @@
 
 namespace Mismatch\ORM\Attr;
 
-use Mismatch\Attr\Base;
 use Mismatch\Inflector;
-use Mismatch\Metadata;
-use UnexpectedValueException;
 
-class BelongsTo extends Base
+class BelongsTo extends Relationship
 {
-    /**
-     * @var  array  Tells us how the owner's keys map to the foreign table's keys.
-     */
-    private $mapping = [];
-
-    /**
-     * {@inheritDoc}
-     */
-    public function __construct(array $opts = [])
-    {
-        parent::__construct($opts);
-
-        // Passed nothing, so use the defaults.
-        if (empty($this->key)) {
-            $this->key = Inflector::tableize($this->name) . '_id';
-        }
-
-        // Passed a string, which is assumed to be the owner's key.
-        // We can auto-detect the foreign_key based on its Metadata's "pk".
-        if (is_string($this->key)) {
-            $this->mapping = [
-                'owner_key' => $this->key,
-                'foreign_key' => null,
-            ];
-        }
-
-        // Passed an ['owner_key' => 'foreign_key'], so trust both sides.
-        if (is_array($this->key)) {
-            $this->mapping = [
-                'foreign_key' => current($this->key),
-                'owner_key' => key($this->key),
-            ];
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function read($model)
-    {
-        $value = $this->readValue($model);
-
-        // Allow nullable belongs to relationships. This really
-        // doesn't work for other types of relationships.
-        if ($this->nullable && $value === null) {
-            return null;
-        }
-
-        if (!($value instanceof $this->each)) {
-            $value = $this->loadValue($value);
-            $this->writeValue($model, $value);
-        }
-
-        return $value;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function write($model, $value)
-    {
-        if (!($value instanceof $this->each) && !($this->nullable && $value === null)) {
-            throw new UnexpectedValueException();
-        }
-
-        $this->writeValue($model, $value);
-    }
-
     /**
      * {@inheritDoc}
      */
     public function deserialize(array $result)
     {
-        if (array_key_exists($this->ownerKey(), $result)) {
-            return [$this->name => $result[$this->ownerKey()]];
+        $key = $this->ownerKey();
+
+        // Keep the actual column alive so it's accessible on the model.
+        // We'll use this later for loading the real record.
+        if (array_key_exists($key, $result)) {
+            return [$key => $result[$key]];
         }
 
         return [];
     }
 
     /**
-     * @param   mixed  $value
-     * @return  Mismatch\Model
+     * {@inheritDoc}
      */
-    private function loadValue($value)
+    protected function isValid($value)
+    {
+        if ($value === null && $this->nullable) {
+            return true;
+        }
+
+        return $value instanceof $this->each;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function loadForeign($model)
     {
         $query = $this->foreignMeta()['query'];
+        $value = $model->__get($this->ownerKey());
 
         // Use the foreign key only if it's declared. We can trust
         // the query class to use the right foreign key if not.
@@ -109,26 +54,30 @@ class BelongsTo extends Base
     }
 
     /**
-     * @return  string
+     * {@inheritDoc}
      */
-    private function ownerKey()
+    protected function resolveOwnerKey()
     {
-        return $this->mapping['owner_key'];
+        if (is_array($this->key)) {
+            return key($this->key);
+        }
+
+        if ($this->key !== $this->name) {
+            return $this->key;
+        }
+
+        return $this->foreignMeta()['fk'];
     }
 
     /**
-     * @return  string
+     * {@inheritDoc}
      */
-    private function foreignKey()
+    protected function resolveForeignKey()
     {
-        return $this->mapping['foreign_key'];
-    }
+        if (is_array($this->key)) {
+            return current($this->key);
+        }
 
-    /**
-     * @return  Mismatch\Metadata
-     */
-    private function foreignMeta()
-    {
-        return Metadata::get($this->each);
+        return $this->foreignMeta()['pk'];
     }
 }

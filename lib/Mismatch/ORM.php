@@ -21,6 +21,11 @@ trait ORM
             return 'id';
         };
 
+        // The default foreign key of the model, by name.
+        $m['fk'] = function($m) {
+            return $m['table'] . '_id';
+        };
+
         // The connection the model will use to talk to the database.
         $m['connection'] = $m->factory(function ($m) {
             return ORM\Connector::connect($m['credentials']);
@@ -65,3 +70,4 @@ trait ORM
 
 // Register the custom types we've got going on.
 Attrs::register('BelongsTo', 'Mismatch\ORM\Attr\BelongsTo');
+Attrs::register('HasMany', 'Mismatch\ORM\Attr\HasMany');

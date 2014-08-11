@@ -39,6 +39,21 @@ class Attrs implements IteratorAggregate
     private $attrs = [];
 
     /**
+     * @var  Mismatch\Metadata
+     */
+    private $metadata;
+
+    /**
+     * Constructor.
+     *
+     * @param  Mismatch\Metadata  $metadata
+     */
+    public function __construct($metadata)
+    {
+        $this->metadata = $metadata;
+    }
+
+    /**
      * @return  string
      */
     public function __toString()
@@ -130,7 +145,9 @@ class Attrs implements IteratorAggregate
 
         $opts = array_merge([
             'name' => $name,
-        ], $opts);
+        ], $opts, [
+            'metadata' => $this->metadata,
+        ]);
 
         return $this->parseType($opts);
     }
