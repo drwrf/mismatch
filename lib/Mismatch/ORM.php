@@ -62,3 +62,6 @@ trait ORM
         return call_user_func_array([$query, $method], $args);
     }
 }
+
+// Register the custom types we've got going on.
+Attrs::register('BelongsTo', 'Mismatch\ORM\Attr\BelongsTo');

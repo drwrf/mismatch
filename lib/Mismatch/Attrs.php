@@ -130,7 +130,6 @@ class Attrs implements IteratorAggregate
 
         $opts = array_merge([
             'name' => $name,
-            'key' => $name,
         ], $opts);
 
         return $this->parseType($opts);
