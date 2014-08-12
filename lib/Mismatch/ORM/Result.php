@@ -4,9 +4,10 @@ namespace Mismatch\ORM;
 
 use Doctrine\DBAL\Driver\Statement;
 use InvalidArgumentException;
+use Countable;
 use Iterator;
 
-class Result implements Iterator
+class Result implements Iterator, Countable
 {
     /**
      * @var  Statement
@@ -127,6 +128,14 @@ class Result implements Iterator
     public function next()
     {
         ++$this->position;
+    }
+
+    /**
+     * @return  int
+     */
+    public function count($mode = COUNT_NORMAL)
+    {
+        return $this->stmt->rowCount();
     }
 
     /**

@@ -7,9 +7,10 @@ use Mismatch\ORM\Expression\Composite;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
 use IteratorAggregate;
+use Countable;
 use DomainException;
 
-class Query implements IteratorAggregate
+class Query implements IteratorAggregate, Countable
 {
     /**
      * @var  Mismatch\Connection  The connection to make requests against.
@@ -290,6 +291,16 @@ class Query implements IteratorAggregate
     public function order(array $columns)
     {
         return $this->addPart('order', $columns);
+    }
+
+    /**
+     * Returns the total number of records in the query.
+     *
+     * @return  int
+     */
+    public function count($mode = COUNT_NORMAL)
+    {
+        return $this->all()->count();
     }
 
     /**
