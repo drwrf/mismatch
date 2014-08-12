@@ -10,7 +10,7 @@ abstract class Base implements AttrInterface
      *
      * @var  string  $name
      */
-    protected $name;
+    public $name;
 
     /**
      * The key of the attribute, which dictates the place that it is
@@ -18,7 +18,7 @@ abstract class Base implements AttrInterface
      *
      * @var  string
      */
-    protected $key;
+    public $key;
 
     /**
      * Whether or not the attribute is nullable. If it is true, then
@@ -26,21 +26,21 @@ abstract class Base implements AttrInterface
      *
      * @param  bool  $name
      */
-    protected $nullable = false;
+    public $nullable = false;
 
     /**
      * A default value for the attribute.
      *
      * @param  mixed  $default
      */
-    protected $default;
+    public $default;
 
     /**
      * The metadata of the model owning this attribute.
      *
      * @var  Mismatch\Metadata
      */
-    protected $metadata;
+    public $metadata;
 
     /**
      * @param  array  $opts
@@ -51,23 +51,12 @@ abstract class Base implements AttrInterface
             $this->$key = $value;
         }
 
-        // Allow hooking into the options process.
-        $this->initOpts();
-
         // While all attributes write to the entity using their
         // name, it is important for serialization purposes that
         // attributes know what key they're stored under.
         if (!isset($this->key)) {
             $this->key = $this->name;
         }
-    }
-
-    /**
-     * Hook for setting options after construction.
-     */
-    protected function initOpts()
-    {
-        // Nothing to do by default.
     }
 
     /**

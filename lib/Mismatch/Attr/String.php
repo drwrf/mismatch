@@ -4,7 +4,7 @@ namespace Mismatch\Attr;
 
 class String extends Primitive
 {
-    protected $default = '';
+    public $default = '';
 
     /**
      * {@inheritDoc}

@@ -4,7 +4,7 @@ namespace Mismatch\Attr;
 
 class Integer extends Primitive
 {
-    protected $default = 0;
+    public $default = 0;
 
     /**
      * {@inheritDoc}

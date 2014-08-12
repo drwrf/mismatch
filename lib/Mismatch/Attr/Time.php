@@ -7,7 +7,7 @@ use DateTimeZone as TZ;
 
 class Time extends Primitive
 {
-    protected $default = 'now';
+    public $default = 'now';
     protected $timezone = 'UTC';
 
     /**
