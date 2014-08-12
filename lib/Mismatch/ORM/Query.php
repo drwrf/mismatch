@@ -6,9 +6,10 @@ use Mismatch\Inflector;
 use Mismatch\ORM\Expression\Composite;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
+use IteratorAggregate;
 use DomainException;
 
-class Query
+class Query implements IteratorAggregate
 {
     /**
      * @var  Mismatch\Connection  The connection to make requests against.
@@ -303,6 +304,16 @@ class Query
         $this->mapper = $mapper;
 
         return $this;
+    }
+
+    /**
+     * Implementation of IteratorAggregate
+     *
+     * @return  Iterator
+     */
+    public function getIterator()
+    {
+        return $this->all();
     }
 
     /**
