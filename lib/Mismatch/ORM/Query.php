@@ -92,7 +92,11 @@ class Query implements IteratorAggregate, Countable
             $query = [$this->pk => $query];
         }
 
-        $result = $this->limit(1)->all($query, $conds);
+        if (!$this->hasPart('limit')) {
+            $this->limit(1);
+        }
+
+        $result = $this->all($query, $conds);
 
         if ($result->valid()) {
             return $result->current();
@@ -112,9 +116,12 @@ class Query implements IteratorAggregate, Countable
             $this->where($query, $conds);
         }
 
-        list ($query, $params) = $this->toSelect();
+        if (!$this->result) {
+            list($query, $params) = $this->toSelect();
+            $this->result = $this->raw($query, $params);
+        }
 
-        return $this->raw($query, $params);
+        return $this->result;
     }
 
     /**
@@ -304,6 +311,16 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
+     * Implementation of IteratorAggregate
+     *
+     * @return  Iterator
+     */
+    public function getIterator()
+    {
+        return $this->all();
+    }
+
+    /**
      * Set the mapper to use for turning databae results
      * into Mismatch models.
      *
@@ -315,16 +332,6 @@ class Query implements IteratorAggregate, Countable
         $this->mapper = $mapper;
 
         return $this;
-    }
-
-    /**
-     * Implementation of IteratorAggregate
-     *
-     * @return  Iterator
-     */
-    public function getIterator()
-    {
-        return $this->all();
     }
 
     /**
@@ -456,6 +463,7 @@ class Query implements IteratorAggregate, Countable
     private function setPart($name, $value)
     {
         $this->parts[$name] = $value;
+        $this->result = null;
 
         return $this;
     }
@@ -470,6 +478,7 @@ class Query implements IteratorAggregate, Countable
     private function addPart($name, array $value)
     {
         $this->parts[$name] = array_merge($this->getPart($name, []), $value);
+        $this->result = null;
 
         return $this;
     }
@@ -486,6 +495,8 @@ class Query implements IteratorAggregate, Countable
         if (!$this->hasPart($name)) {
             $this->setPart($name, $default);
         }
+
+        $this->result = null;
 
         return $this->parts[$name];
     }
