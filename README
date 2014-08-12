@@ -28,7 +28,7 @@
                     $m->id        = 'Integer';
                     $m->name      = 'String';
                     $m->email     = 'Email';
-                    $m->role      = 'Model\Role';
-                    $m->addresses = 'Model\Address[]';
+                    $m->role      = 'BelongsTo[Model\Role]';
+                    $m->addresses = 'HasMany[Model\Address]';
                 }
             }
