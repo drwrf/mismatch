@@ -66,6 +66,26 @@ trait ORM
 
         return call_user_func_array([$query, $method], $args);
     }
+
+    /**
+     * Returns the id of the record.
+     *
+     * @return  mixed
+     */
+    public function id()
+    {
+        return $this->__get(static::metadata()['pk']);
+    }
+
+    /**
+     * Allows destroying this particular model.
+     *
+     * @return  bool
+     */
+    public function destroy()
+    {
+        return (bool) static::metadata()['query']->delete($this->id());
+    }
 }
 
 // Register the custom types we've got going on.
