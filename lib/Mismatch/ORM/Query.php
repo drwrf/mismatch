@@ -125,6 +125,27 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
+     * Executes a deletion.
+     *
+     * @param   mixed  $query
+     * @param   mixed  $conds
+     * @return  int
+     */
+    public function delete($query = null, $conds = [])
+    {
+        if ($query && is_int($query)) {
+            $query = [$this->pk => $query];
+        }
+
+        if ($query) {
+            $this->where($query, $conds);
+        }
+
+        list($query, $params) = $this->toDelete();
+        return count($this->raw($query, $params));
+    }
+
+    /**
      * Executes a raw query.
      *
      * @param   string  $query
@@ -173,7 +194,7 @@ class Query implements IteratorAggregate, Countable
             $this->alias = is_array($table) ? current($table) : $table;
         }
 
-        $this->addPart('from', $table);
+        $this->addPart('from', (array) $table);
 
         return $this;
     }
@@ -381,6 +402,34 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
+     * Compiles the query as a DELETE statement.
+     *
+     * @return  array
+     */
+    private function toDelete()
+    {
+        $select = [];
+        $params = [];
+
+        $query[] = 'DELETE FROM ' . $this->compileList('from', false);
+
+        if ($join = $this->compileJoin()) {
+            $query[] = $join[0];
+            $params = array_merge($params, $join[1]);
+        }
+
+        if ($expr = $this->compileExpression('where')) {
+            $query[] = sprintf('WHERE %s', $expr[0]);
+            $params = array_merge($params, $expr[1]);
+        }
+
+        $query = implode(array_filter($query), ' ');
+        $query = $this->compileLimit($query);
+
+        return [$query, $params];
+    }
+
+    /**
      * Compiles the JOIN clause of a SQL query.
      *
      * @return  array
@@ -513,11 +562,12 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
-     * Prepares the FROM clause of a SQL query.
+     * Prepares a list-based clause of a SQL query.
      *
      * @param  array  $query
+     * @param  bool   $alias
      */
-    private function compileList($type)
+    private function compileList($type, $aliasFrom = true)
     {
         if (!$this->hasPart($type)) {
             return;
@@ -541,7 +591,7 @@ class Query implements IteratorAggregate, Countable
 
                 // Turn FROMs into table AS alias
                 case 'from':
-                    $parts[] = $this->alias($source, $alias);
+                    $parts[] = $aliasFrom ? $this->alias($source, $alias) : $source;
                     break;
 
                 // Turn ORDER BYs into table.column ASC/DESC
