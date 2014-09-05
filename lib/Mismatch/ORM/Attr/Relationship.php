@@ -48,6 +48,14 @@ abstract class Relationship extends Base
     /**
      * {@inheritDoc}
      */
+    public function serialize($model)
+    {
+        return []; // TODO
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function deserialize(array $result)
     {
         // By default, most relationships do not need to deserialize

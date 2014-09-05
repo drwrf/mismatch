@@ -106,8 +106,10 @@ class PrimitiveTest extends \PHPUnit_Framework_TestCase
         $subject->key = 'foo';
         $subject->name = 'bar';
 
-        $this->assertEquals(['bar' => 'baz'], $subject->deserialize([
-            'foo' => 'baz'
-        ]));
+        $result = $subject->deserialize([
+            'foo' => 'now'
+        ]);
+
+        $this->assertTrue(isset($result['bar']));
     }
 }

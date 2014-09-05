@@ -94,4 +94,15 @@ abstract class Base implements AttrInterface
     {
         return $model->entity->has($this->name);
     }
+
+    /**
+     * Returns whether or not the model has a value for the attribute.
+     *
+     * @param   Mismatch\Model  $model
+     * @return  bool
+     */
+    protected function changedValue($model)
+    {
+        return $model->entity->changed($this->name);
+    }
 }

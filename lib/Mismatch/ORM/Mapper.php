@@ -27,6 +27,23 @@ class Mapper
     }
 
     /**
+     * Given a model, this should turn it into a saveable array of data.
+     *
+     * @param   Mismatch\Model  $model
+     * @return  array
+     */
+    public function serialize($model)
+    {
+        $data = [];
+
+        foreach ($this->attrs as $attr) {
+            $data = array_merge($data, $attr->serialize($model));
+        }
+
+        return $data;
+    }
+
+    /**
      * Given a database result, this should map it to an
      * instance of a Mismatch model.
      *

@@ -9,17 +9,11 @@ abstract class Primitive extends Base
      */
     public function read($model)
     {
-        if (!$this->hasValue($model)) {
-            return !$this->nullable ? $this->getDefault() : null;
+        if (!$this->hasValue($model) && !$this->nullable) {
+            return $this->getDefault();
         }
 
-        $value = $this->readValue($model);
-
-        if ($this->nullable && $value === null) {
-            return null;
-        }
-
-        return $this->cast($value);
+        return $this->readValue($model);
     }
 
     /**
@@ -28,7 +22,7 @@ abstract class Primitive extends Base
     public function write($model, $value)
     {
         if (!$this->nullable || $value !== null) {
-            $value = $this->cast($value);
+            $value = $this->toPHP($value);
         }
 
         return $this->writeValue($model, $value);
@@ -37,10 +31,29 @@ abstract class Primitive extends Base
     /**
      * {@inheritDoc}
      */
+    public function serialize($model)
+    {
+        $value = $this->hasValue($model)
+            ? $this->readValue($model)
+            : $this->getDefault();
+
+        // Pass nothing when nullable, and let the implementation
+        // handle the appropriate null-ation of the key
+        if ($value === null && $this->nullable) {
+            return [];
+        }
+
+        return [$this->key => $this->toNative($value)];
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     public function deserialize(array $result)
     {
         if (array_key_exists($this->key, $result)) {
-            return [$this->name => $result[$this->key]];
+            return [$this->name => $this->toPHP($result[$this->key])];
         }
 
         return [];
@@ -54,6 +67,26 @@ abstract class Primitive extends Base
     public function getDefault()
     {
         return $this->default;
+    }
+
+    /**
+     * Should return the value casted to the native, internal type.
+     *
+     * @return  mixed
+     */
+    public function toNative($value)
+    {
+        return $this->cast($value);
+    }
+
+    /**
+     * Should return the value casted to the PHP type.
+     *
+     * @return  mixed
+     */
+    public function toPHP($value)
+    {
+        return $this->cast($value);
     }
 
     /**

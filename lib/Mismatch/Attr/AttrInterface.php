@@ -22,6 +22,15 @@ interface AttrInterface
     public function write($model, $value);
 
     /**
+     * Should extract the necessary keys from the result
+     * and turn it into an array that can be saved to the database.
+     *
+     * @param   Mismatch\Model  $model
+     * @return  array
+     */
+    public function serialize($model);
+
+    /**
      * Should extract the necessary keys from the result and
      * turn it into an array that the model can understand.
      *

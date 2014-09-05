@@ -8,7 +8,17 @@ use DateTimeZone as TZ;
 class Time extends Primitive
 {
     public $default = 'now';
+    public $format = 'Y-m-d H:i:s';
     protected $timezone = 'UTC';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function toNative($value)
+    {
+        return parent::toNative($value)->format($this->format);
+    }
+
 
     /**
      * {@inheritDoc}
