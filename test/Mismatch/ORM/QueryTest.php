@@ -229,6 +229,32 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->subject->all();
     }
 
+    public function test_update()
+    {
+        $this->assertQuery(
+            'UPDATE authors SET role_id = ?', [1], [Type::INTEGER]);
+
+        $this->subject->set(['role_id' => 1])->update();
+    }
+
+    public function test_update_where()
+    {
+        $this->assertQuery(
+            'UPDATE authors SET role_id = ? WHERE author.id = ?',
+            [1, 2], [Type::INTEGER, Type::INTEGER]);
+
+        $this->subject->set(['role_id' => 1])->update(2);
+    }
+
+    public function test_insert()
+    {
+        $this->assertQuery(
+            'INSERT INTO authors (email) VALUES (?)',
+            ['foo@example.com'], [\PDO::PARAM_STR]);
+
+        $this->subject->set(['email' => 'foo@example.com'])->insert();
+    }
+
     public function test_delete()
     {
         $this->assertQuery(

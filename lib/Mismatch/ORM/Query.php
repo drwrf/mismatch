@@ -125,6 +125,39 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
+     * Executes an update.
+     *
+     * @param   mixed  $query
+     * @param   mixed  $conds
+     * @return  int
+     */
+    public function update($query = null, $conds = [])
+    {
+        if ($query && is_int($query)) {
+            $query = [$this->pk => $query];
+        }
+
+        if ($query) {
+            $this->where($query, $conds);
+        }
+
+        list($query, $params) = $this->toUpdate();
+        return count($this->raw($query, $params));
+    }
+
+    /**
+     * Executes an insert.
+     *
+     * @return  int
+     */
+    public function insert()
+    {
+        list($query, $params) = $this->toInsert();
+        return count($this->raw($query, $params));
+    }
+
+
+    /**
      * Executes a deletion.
      *
      * @param   mixed  $query
@@ -155,7 +188,6 @@ class Query implements IteratorAggregate, Countable
     public function raw($query, array $params = [])
     {
         $types = $this->prepareTypes($params);
-
         $result = $this->conn->executeQuery($query, $params, $types);
         $result = new Result($result);
 
@@ -322,6 +354,16 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
+     * Adds values to the list that should be changed.
+     *
+     * @param  array  $values
+     */
+    public function set(array $values)
+    {
+        return $this->addPart('set', $values);
+    }
+
+    /**
      * Returns the total number of records in the query.
      *
      * @return  int
@@ -362,15 +404,13 @@ class Query implements IteratorAggregate, Countable
      */
     private function toSelect()
     {
-        $select = [];
-        $params = [];
-
         if (!$this->hasPart('select')) {
             $this->setPart('select', ['*']);
         }
 
         $query[] = 'SELECT ' . $this->compileList('select');
         $query[] = 'FROM ' . $this->compileList('from');
+        $params = [];
 
         if ($join = $this->compileJoin()) {
             $query[] = $join[0];
@@ -402,16 +442,54 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
+     * Compiles the query as an UPDATE statement.
+     *
+     * @return  array
+     */
+    private function toUpdate()
+    {
+        $update = $this->compileUpdate();
+        $query[] = 'UPDATE ' . $this->compileList('from', false);
+        $query[] = 'SET ' . $update[0];
+        $params = $update[1];
+
+        if ($expr = $this->compileExpression('where')) {
+            $query[] = sprintf('WHERE %s', $expr[0]);
+            $params = array_merge($params, $expr[1]);
+        }
+
+        $query = implode(array_filter($query), ' ');
+        $query = $this->compileLimit($query);
+
+        return [$query, $params];
+    }
+
+    /**
+     * Compiles the query as an INSERT statement.
+     *
+     * @return  array
+     */
+    private function toInsert()
+    {
+        $insert = $this->compileInsert();
+        $query[] = 'INSERT INTO ' . $this->compileList('from', false);
+        $query[] = $insert[0];
+        $params = $insert[1];
+
+        $query = implode(array_filter($query), ' ');
+
+        return [$query, $params];
+    }
+
+    /**
      * Compiles the query as a DELETE statement.
      *
      * @return  array
      */
     private function toDelete()
     {
-        $select = [];
-        $params = [];
-
         $query[] = 'DELETE FROM ' . $this->compileList('from', false);
+        $params = [];
 
         if ($join = $this->compileJoin()) {
             $query[] = $join[0];
@@ -607,6 +685,52 @@ class Query implements IteratorAggregate, Countable
         }
 
         return implode($parts, ', ');
+    }
+
+    /**
+     * @return  array
+     */
+    private function compileUpdate()
+    {
+        if (!$this->hasPart('set')) {
+            throw new DomainException();
+        }
+
+        $parts = [];
+        $binds = [];
+
+        foreach ($this->getPart('set') as $column => $value) {
+            $parts[] = sprintf('%s = ?', $column);
+            $binds[] = $value;
+        }
+
+        return [implode($parts, ', '), $binds];
+    }
+
+    /**
+     * @return  array
+     */
+    private function compileInsert()
+    {
+        if (!$this->hasPart('set')) {
+            throw new DomainException();
+        }
+
+        $columns = [];
+        $values = [];
+        $binds = [];
+
+        foreach ($this->getPart('set') as $column => $value) {
+            $columns[] = $column;
+            $values[] = '?';
+            $binds[] = $value;
+        }
+
+        $columns = implode($columns, ',');
+        $values = implode($values, ',');
+        $query = sprintf('(%s) VALUES (%s)', $columns, $values);
+
+        return [$query, $binds];
     }
 
     /**
