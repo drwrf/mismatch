@@ -53,9 +53,10 @@ class Entity
      * Reads a value from the entity.
      *
      * @param   string  $name
+     * @param   mixed   $default
      * @return  mixed
      */
-    public function read($name)
+    public function read($name, $default = null)
     {
         if (array_key_exists($name, $this->changes)) {
             return $this->changes[$name];
@@ -64,6 +65,8 @@ class Entity
         if (array_key_exists($name, $this->data)) {
             return $this->data[$name];
         }
+
+        return $default;
     }
 
     /**
@@ -102,4 +105,9 @@ class Entity
     {
         return array_key_exists($name, $this->changes);
     }
+
+    /**
+     * Mark the entity as persisted, merging all changes with
+     * those 
+     */
 }

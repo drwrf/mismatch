@@ -21,13 +21,10 @@ abstract class Relationship extends Base
     /**
      * {@inheritDoc}
      */
-    public function read($model)
+    public function read($model, $value)
     {
-        $value = $this->readValue($model);
-
         if (!$this->isValid($value)) {
             $value = $this->loadForeign($model);
-            $this->writeValue($model, $value);
         }
 
         return $value;
@@ -42,25 +39,32 @@ abstract class Relationship extends Base
             throw new UnexpectedValueException();
         }
 
-        $this->writeValue($model, $value);
+        return $value;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function serialize($model)
+    public function serialize($model, $value)
     {
-        return []; // TODO
+        return; // TODO
     }
 
     /**
      * {@inheritDoc}
      */
-    public function deserialize(array $result)
+    public function deserialize($result, $value)
     {
-        // By default, most relationships do not need to deserialize
-        // anything, since all of their data is stored on the foreign side.
-        return [];
+        return; // TODO
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDefault($model)
+    {
+        // Relationships cannot have a default
+        return null;
     }
 
     /**

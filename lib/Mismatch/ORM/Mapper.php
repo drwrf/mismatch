@@ -2,6 +2,9 @@
 
 namespace Mismatch\ORM;
 
+use Mismatch\Entity;
+use Mismatch\ORM\Attr\Relationship;
+
 class Mapper
 {
     /**
@@ -34,13 +37,7 @@ class Mapper
      */
     public function serialize($model)
     {
-        $data = [];
-
-        foreach ($this->attrs as $attr) {
-            $data = array_merge($data, $attr->serialize($model));
-        }
-
-        return $data;
+        // TODO
     }
 
     /**
@@ -52,12 +49,16 @@ class Mapper
      */
     public function deserialize(array $result)
     {
-        $data = [];
-
         foreach ($this->attrs as $attr) {
-            $data = array_merge($data, $attr->deserialize($result));
+            // XXX: This might cause issues, maybe there's a need
+            // for a no-value object to track this case.
+            if (!isset($result[$attr->key])) {
+                $result[$attr->key] = null;
+            }
+
+            $result[$attr->name] = $attr->deserialize($result, $result[$attr->key]);
         }
 
-        return new $this->class($data);
+        return new $this->class($result);
     }
 }

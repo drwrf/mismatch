@@ -5,15 +5,7 @@ namespace Mismatch\Attr;
 interface AttrInterface
 {
     /**
-     * Should return the normalized value.
-     *
-     * @param   Mismatch\Model  $model
-     * @return  mixed
-     */
-    public function read($model);
-
-    /**
-     * Should return the value as it should be stored internally.
+     * Called when writing a value to the model in PHP land.
      *
      * @param   Mismatch\Model  $model
      * @param   mixed           $value
@@ -22,20 +14,40 @@ interface AttrInterface
     public function write($model, $value);
 
     /**
-     * Should extract the necessary keys from the result
-     * and turn it into an array that can be saved to the database.
+     * Called when reading a value from a model.
      *
      * @param   Mismatch\Model  $model
-     * @return  array
+     * @param   mixed           $value
+     * @return  mixed
      */
-    public function serialize($model);
+    public function read($model, $value);
 
     /**
-     * Should extract the necessary keys from the result and
-     * turn it into an array that the model can understand.
+     * Called when reading a value from the datasource and it needs
+     * to be turned into a native PHP type.
      *
-     * @param   array  $result
-     * @return  array
+     * @param   mixed  $result
+     * @param   mixed  $value
+     * @return  mixed
      */
-    public function deserialize(array $result);
+    public function deserialize($result, $value);
+
+    /**
+     * Called when reading a value from a model that needs to
+     * be turned into a native type for the datasource.
+     *
+     * @param   Mismatch\Model  $model
+     * @param   mixed           $value
+     * @return  mixed
+     */
+    public function serialize($model, $value);
+
+    /**
+     * Called when there is no value for the attribute and
+     * we want to provide a default.
+     *
+     * @param   Mismatch\Model  $model
+     * @return  mixed
+     */
+    public function getDefault($model);
 }

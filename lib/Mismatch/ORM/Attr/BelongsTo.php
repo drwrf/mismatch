@@ -9,28 +9,8 @@ class BelongsTo extends Relationship
     /**
      * {@inheritDoc}
      */
-    public function deserialize(array $result)
-    {
-        $key = $this->ownerKey();
-
-        // Keep the actual column alive so it's accessible on the model.
-        // We'll use this later for loading the real record.
-        if (array_key_exists($key, $result)) {
-            return [$key => $result[$key]];
-        }
-
-        return [];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     protected function isValid($value)
     {
-        if ($value === null && $this->nullable) {
-            return true;
-        }
-
         return $value instanceof $this->each;
     }
 

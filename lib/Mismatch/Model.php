@@ -83,7 +83,7 @@ trait Model
      */
     public function __isset($name)
     {
-        return $this->hasAttr($name) || $this->entity->has($name);
+        return $this->attr($name) || $this->entity->has($name);
     }
 
     /**
@@ -102,15 +102,20 @@ trait Model
      */
     private function read($name)
     {
-        if ($this->hasAttr($name)) {
-            return $this->attr($name)->read($this);
-        }
+        $attr = $this->attr($name);
 
-        if ($this->entity->has($name)) {
+        if (!$attr) {
             return $this->entity->read($name);
         }
 
-        throw new UnknownAttrException($this, $name);
+        // Allow NULL columns to be returned
+        if (!$this->entity->has($name) && $attr->nullable) {
+            return null;
+        }
+
+        $value = $this->entity->read($name, $attr->getDefault($this));
+
+        return $attr->read($this, $value);
     }
 
     /**
@@ -121,28 +126,17 @@ trait Model
      */
     private function write($name, $value)
     {
-        if ($this->hasAttr($name)) {
-            return $this->attr($name)->write($this, $value);
+        $attr = $this->attr($name);
+
+        if (!$attr) {
+            return $this->entity->write($name, $value);
         }
 
-        return $this->entity->write($name, $value);
-    }
-
-    /**
-     * Returns whether or not the model has an attribute associated with it.
-     *
-     * @param  string $name
-     * @return bool
-     */
-    private function hasAttr($name)
-    {
-        try {
-            $this->attr($name);
-        } catch (UnknownAttrException $e) {
-            return false;
+        if ($value === null && $attr->nullable) {
+            return $this->entity->write($name, null);
         }
 
-        return true;
+        return $this->entity->write($name, $attr->write($value));
     }
 
     /**
@@ -156,6 +150,10 @@ trait Model
             $this->attrs = static::metadata()['attrs'];
         }
 
-        return $this->attrs->get($name);
+        try {
+            return $this->attrs->get($name);
+        } catch (UnknownAttrException $e) {
+            return null;
+        }
     }
 }

@@ -12,10 +12,7 @@ class PrimitiveTest extends \PHPUnit_Framework_TestCase
     public function allTypes()
     {
         $createType = function($class) {
-            $entity = new Entity();
-            $model = (object) ['entity' => $entity];
-
-            return [new $class(), $model, $entity];
+            return [new $class(), (object) []];
         };
 
         return [
@@ -23,7 +20,6 @@ class PrimitiveTest extends \PHPUnit_Framework_TestCase
             $createType('Mismatch\Attr\Float'),
             $createType('Mismatch\Attr\String'),
             $createType('Mismatch\Attr\Boolean'),
-            $createType('Mismatch\Attr\Time'),
             $createType('Mismatch\Attr\Set'),
         ];
     }
@@ -31,85 +27,20 @@ class PrimitiveTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider  allTypes
      */
-    public function testRead($subject, $model, $entity)
+    public function testCast($subject, $model)
     {
-        $subject->name = 'foo';
-        $entity->write('foo', 'now');
-        $this->assertNotNull($subject->read($model));
+        $this->assertNotNull($subject->read($model, 'foo'));
+        $this->assertNotNull($subject->write($model, 'foo'));
+        $this->assertNotNull($subject->serialize($model, 'foo'));
+        $this->assertNotNull($subject->deserialize($model, 'foo'));
     }
 
     /**
      * @dataProvider  allTypes
      */
-    public function testRead_whenNullable($subject, $model, $entity)
+    public function testGetDefault($subject, $model)
     {
-        $subject->nullable = true;
-        $subject->name = 'foo';
-        $entity->write('foo', null);
-        $this->assertNull($subject->read($model));
-    }
-
-    /**
-     * @dataProvider  allTypes
-     */
-    public function testRead_default_whenNotNullable($subject, $model, $entity)
-    {
-        $subject->name = 'foo';
-        $subject->default = 'now';
-        $this->assertNotNull('now', $subject->read($model));
-    }
-
-    /**
-     * @dataProvider  allTypes
-     */
-    public function testRead_default_whenNullable($subject, $model, $entity)
-    {
-        $subject->name = 'foo';
-        $subject->nullable = true;
-        $this->assertNull($subject->read($model));
-    }
-
-    /**
-     * @dataProvider  allTypes
-     */
-    public function testWrite($subject, $model, $entity)
-    {
-        $this->assertFalse($entity->has('foo'));
-
-        $subject->name = 'foo';
-        $subject->nullable = true;
-        $subject->write($model, 'now');
-
-        $this->assertTrue($entity->has('foo'));
-    }
-
-    /**
-     * @dataProvider  allTypes
-     */
-    public function testWrite_whenNullable($subject, $model, $entity)
-    {
-        $this->assertFalse($entity->has('foo'));
-
-        $subject->name = 'foo';
-        $subject->nullable = true;
-        $subject->write($model, null);
-
-        $this->assertTrue($entity->has('foo'));
-        $this->assertNull($entity->read('foo'));
-    }
-
-    /**
-     * @dataProvider  allTypes
-     */
-    public function testDeserialize_whenExists($subject, $model, $entity)
-    {
-        $subject->key = 'foo';
-        $subject->name = 'bar';
-
-        $result = $subject->deserialize([
-            'foo' => 'now'
-        ]);
-
-        $this->assertTrue(isset($result['bar']));
+        $subject->default = 'foo';
+        $this->assertSame('foo', $subject->getDefault($model));
     }
 }

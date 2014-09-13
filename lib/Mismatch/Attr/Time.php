@@ -7,8 +7,19 @@ use DateTimeZone as TZ;
 
 class Time extends Primitive
 {
+    /**
+     * @var  mixed  A valid Datetime::__construct argument
+     */
     public $default = 'now';
+
+    /**
+     * @var  string  The format to use when writing to the native datasource
+     */
     public $format = 'Y-m-d H:i:s';
+
+    /**
+     * @var   string  The timezone for the time.
+     */
     protected $timezone = 'UTC';
 
     /**
@@ -18,7 +29,6 @@ class Time extends Primitive
     {
         return parent::toNative($value)->format($this->format);
     }
-
 
     /**
      * {@inheritDoc}
@@ -35,7 +45,7 @@ class Time extends Primitive
     /**
      * {@inheritDoc}
      */
-    public function getDefault()
+    public function getDefault($model)
     {
         return new DateTime($this->default, new TZ($this->timezone));
     }
