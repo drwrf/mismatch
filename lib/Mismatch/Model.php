@@ -100,7 +100,7 @@ trait Model
      * @param  string  $name
      * @return mixed
      */
-    private function read($name)
+    public function read($name)
     {
         $attr = $this->attr($name);
 
@@ -124,7 +124,7 @@ trait Model
      * @param  string  $name
      * @param  mixed   $value
      */
-    private function write($name, $value)
+    public function write($name, $value)
     {
         $attr = $this->attr($name);
 
@@ -137,6 +137,17 @@ trait Model
         }
 
         return $this->entity->write($name, $attr->write($value));
+    }
+
+    /**
+     * Returns whether or not the attribute has changed on the model.
+     *
+     * @param  string  $name
+     * @return bool
+     */
+    public function changed($name)
+    {
+        return $this->entity->changed($name);
     }
 
     /**

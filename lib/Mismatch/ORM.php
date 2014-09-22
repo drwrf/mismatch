@@ -2,6 +2,8 @@
 
 namespace Mismatch;
 
+use Mismatch\ORM\Attr\Primary;
+
 trait ORM
 {
     /**
@@ -18,7 +20,13 @@ trait ORM
 
         // The primary key of the model, by name.
         $m['pk'] = function ($m) {
-            return 'id';
+            foreach ($m['attrs'] as $attr) {
+                if ($attr instanceof Primary) {
+                    return $attr->name;
+                }
+            }
+
+            throw new DomainException();
         };
 
         // The default foreign key of the model, by name.
@@ -68,6 +76,14 @@ trait ORM
     }
 
     /**
+     * @return  bool
+     */
+    public function isNew()
+    {
+        return !$this->id();
+    }
+
+    /**
      * Returns the id of the record.
      *
      * @return  mixed
@@ -75,6 +91,16 @@ trait ORM
     public function id()
     {
         return $this->__get(static::metadata()['pk']);
+    }
+
+    /**
+     * Allows saving this particular model.
+     *
+     * @return  bool
+     */
+    public function save()
+    {
+        return static::metadata()['mapper']->serialize($this);
     }
 
     /**
@@ -89,5 +115,6 @@ trait ORM
 }
 
 // Register the custom types we've got going on.
+Attrs::register('Primary', 'Mismatch\ORM\Attr\Primary');
 Attrs::register('BelongsTo', 'Mismatch\ORM\Attr\BelongsTo');
 Attrs::register('HasMany', 'Mismatch\ORM\Attr\HasMany');

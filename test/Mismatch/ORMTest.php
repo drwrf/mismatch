@@ -26,5 +26,11 @@ use Mismatch;
 
 class OrmMock
 {
+    use Mismatch\Model;
     use Mismatch\ORM;
+
+    public static function init($m)
+    {
+        $m->id = 'Primary';
+    }
 }
