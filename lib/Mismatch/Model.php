@@ -103,19 +103,13 @@ trait Model
     public function read($name)
     {
         $attr = $this->attr($name);
+        $value = $this->entity->read($name);
 
-        if (!$attr) {
-            return $this->entity->read($name);
+        if ($attr) {
+            $value = $attr->read($this, $value);
         }
 
-        // Allow NULL columns to be returned
-        if (!$this->entity->has($name) && $attr->nullable) {
-            return null;
-        }
-
-        $value = $this->entity->read($name, $attr->getDefault($this));
-
-        return $attr->read($this, $value);
+        return $value;
     }
 
     /**
@@ -128,15 +122,11 @@ trait Model
     {
         $attr = $this->attr($name);
 
-        if (!$attr) {
-            return $this->entity->write($name, $value);
+        if ($attr) {
+            $value = $attr->write($this, $value);
         }
 
-        if ($value === null && $attr->nullable) {
-            return $this->entity->write($name, null);
-        }
-
-        return $this->entity->write($name, $attr->write($value));
+        return $this->entity->write($name, $value);
     }
 
     /**

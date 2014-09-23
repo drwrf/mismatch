@@ -15,9 +15,14 @@ class Primary extends Primitive
     /**
      * {@inheritDoc}
      */
+    public $nullable = true;
+
+    /**
+     * {@inheritDoc}
+     */
     public function getDefault($model)
     {
-        throw new DomainException();
+        return null;
     }
 
     /**

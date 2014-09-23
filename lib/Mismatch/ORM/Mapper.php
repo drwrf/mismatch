@@ -3,6 +3,8 @@
 namespace Mismatch\ORM;
 
 use Mismatch\Entity;
+use Mismatch\Metadata;
+use Mismatch\ORM\Attr\Primary;
 use Mismatch\ORM\Attr\Relationship;
 
 class Mapper
@@ -37,7 +39,44 @@ class Mapper
      */
     public function serialize($model)
     {
-        // TODO
+        $tx = new Transaction();
+        $related = [];
+        $data = [];
+
+        foreach ($this->attrs as $attr) {
+            // Allow relationships to handle saving in their own special way
+            if ($attr instanceof Relationship) {
+                $related[] = $attr;
+                continue;
+            }
+
+            $name = $attr->name;
+            $key = $attr->key;
+
+            // New records get all their special defaults and what-not
+            // stored. While already persisted records only need changes.
+            if ($model->isNew() || $model->changed($name)) {
+                $data[$key] = $attr->serialize($model, $model->read($name));
+            }
+        }
+
+        $query = $this->query()->set($data);
+
+        // Perform the update first in line.
+        $tx->push(function() use ($model, $query) {
+            if (!$model->isNew()) {
+                $query->update($model->id());
+            } else {
+                $query->insert();
+            }
+        });
+
+        // Now run through all relationships and let them do their thang.
+        foreach ($related as $attr) {
+            $attr->serialize($model, $tx);
+        }
+
+        return $tx->commit();
     }
 
     /**
@@ -60,5 +99,13 @@ class Mapper
         }
 
         return new $this->class($result);
+    }
+
+    /**
+     * @return  Mismatch\ORM\Query
+     */
+    private function query()
+    {
+        return Metadata::get($this->class)['query'];
     }
 }
