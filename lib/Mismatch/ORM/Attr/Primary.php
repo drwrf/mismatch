@@ -20,14 +20,6 @@ class Primary extends Primitive
     /**
      * {@inheritDoc}
      */
-    public function getDefault($model)
-    {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function cast($value)
     {
         return $this->each()->cast($value);

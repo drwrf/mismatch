@@ -59,15 +59,6 @@ abstract class Relationship extends Base
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function getDefault($model)
-    {
-        // Relationships cannot have a default
-        return null;
-    }
-
-    /**
      * @return  Mismatch\Metadata
      */
     public function ownerMeta()

@@ -49,20 +49,20 @@ abstract class Primitive extends Base
     }
 
     /**
-     * Should return the default value for the type.
-     *
-     * @return mixed
-     */
-    public function getDefault($model)
-    {
-        return $this->default;
-    }
-
-    /**
      * Should return the value casted to an appropriate type.
      *
      * @param  mixed  $value
      * @return mixed
      */
     abstract public function cast($value);
+
+    /**
+     * Should return the default value for the type.
+     *
+     * @return mixed
+     */
+    protected function getDefault($model)
+    {
+        return $this->default;
+    }
 }

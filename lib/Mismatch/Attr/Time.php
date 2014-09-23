@@ -45,7 +45,7 @@ class Time extends Primitive
     /**
      * {@inheritDoc}
      */
-    public function getDefault($model)
+    protected function getDefault($model)
     {
         return new DateTime($this->default, new TZ($this->timezone));
     }

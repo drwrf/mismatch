@@ -41,13 +41,4 @@ interface AttrInterface
      * @return  mixed
      */
     public function serialize($model, $value);
-
-    /**
-     * Called when there is no value for the attribute and
-     * we want to provide a default.
-     *
-     * @param   Mismatch\Model  $model
-     * @return  mixed
-     */
-    public function getDefault($model);
 }
