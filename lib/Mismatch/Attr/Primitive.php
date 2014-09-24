@@ -7,6 +7,11 @@ abstract class Primitive extends Base
     /**
      * {@inheritDoc}
      */
+    public $serialize = AttrInterface::SERIALIZE_VALUE;
+
+    /**
+     * {@inheritDoc}
+     */
     public function read($model, $value)
     {
         if ($value === null) {
@@ -31,13 +36,14 @@ abstract class Primitive extends Base
     /**
      * {@inheritDoc}
      */
-    public function serialize($model, $value)
+    public function serialize($model, $diff)
     {
-        if ($value === null && $this->nullable) {
-            return null;
+        // We got back either no change, or a change to null.
+        if (!$diff || $diff[1] === null) {
+            return $this->nullable ? null : $this->getDefault($model);
         }
 
-        return $this->cast($value);
+        return $this->cast($diff[1]);
     }
 
     /**

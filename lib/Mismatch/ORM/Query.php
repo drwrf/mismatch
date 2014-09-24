@@ -6,8 +6,9 @@ use Mismatch\Inflector;
 use Mismatch\ORM\Expression\Composite;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
-use IteratorAggregate;
+use Closure;
 use Countable;
+use IteratorAggregate;
 use DomainException;
 
 class Query implements IteratorAggregate, Countable
@@ -125,7 +126,7 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
-     * Executes an update.
+     * Executes an update, returning the number of rows affected.
      *
      * @param   mixed  $query
      * @param   mixed  $conds
@@ -142,20 +143,23 @@ class Query implements IteratorAggregate, Countable
         }
 
         list($query, $params) = $this->toUpdate();
+
         return count($this->raw($query, $params));
     }
 
     /**
-     * Executes an insert.
+     * Executes an insert, returning the last insert id.
      *
      * @return  int
      */
     public function insert()
     {
         list($query, $params) = $this->toInsert();
-        return count($this->raw($query, $params));
-    }
 
+        $this->raw($query, $params);
+
+        return $this->conn->lastInsertId();
+    }
 
     /**
      * Executes a deletion.
@@ -175,6 +179,7 @@ class Query implements IteratorAggregate, Countable
         }
 
         list($query, $params) = $this->toDelete();
+
         return count($this->raw($query, $params));
     }
 
@@ -197,6 +202,16 @@ class Query implements IteratorAggregate, Countable
         }
 
         return $result;
+    }
+
+    /**
+     * Executes the passed callback inside of a transaction.
+     *
+     * @param   Closure  $fn
+     */
+    public function transactional(Closure $fn)
+    {
+        $this->conn->transactional($fn);
     }
 
     /**

@@ -3,9 +3,15 @@
 namespace Mismatch\ORM\Attr;
 
 use Mismatch\Inflector;
+use Mismatch\Attr\AttrInterface;
 
 class BelongsTo extends Relationship
 {
+    /**
+     * {@inheritDoc}
+     */
+    public $serialize = AttrInterface::SERIALIZE_BEFORE;
+
     /**
      * {@inheritDoc}
      */

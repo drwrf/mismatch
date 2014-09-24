@@ -36,6 +36,11 @@ abstract class Base implements AttrInterface
     public $default;
 
     /**
+     * @var  int  The strategy to use for serialization.
+     */
+    public $serialize = AttrInterface::SERIALIZE_NONE;
+
+    /**
      * The metadata of the model owning this attribute.
      *
      * @var  Mismatch\Metadata

@@ -39,7 +39,12 @@ trait Model
      */
     public function __construct($data = [])
     {
-        $this->entity = new Entity($data);
+        $this->entity = new Entity();
+
+        // TODO: Allow whitelisting this as it's kind of a security hole
+        foreach ($data as $key => $value) {
+            $this->__set($key, $value);
+        }
     }
 
     /**
@@ -138,6 +143,17 @@ trait Model
     public function changed($name)
     {
         return $this->entity->changed($name);
+    }
+
+    /**
+     * Returns the original and changed value on a model.
+     *
+     * @param  string  $name
+     * @return array|false
+     */
+    public function diff($name)
+    {
+        return $this->entity->diff($name);
     }
 
     /**

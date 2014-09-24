@@ -2,12 +2,18 @@
 
 namespace Mismatch\ORM\Attr;
 
+use Mismatch\Attr\AttrInterface;
 use Mismatch\Attr\Base;
 use Mismatch\Metadata;
 use UnexpectedValueException;
 
 abstract class Relationship extends Base
 {
+    /**
+     * {@inheritDoc}
+     */
+    public $serialize = AttrInterface::SERIALIZE_AFTER;
+
     /**
      * @var  string  The key on the owning side of the relationship.
      */
@@ -45,9 +51,9 @@ abstract class Relationship extends Base
     /**
      * {@inheritDoc}
      */
-    public function serialize($model, $value)
+    public function serialize($model, $diff)
     {
-        return; // TODO
+        return function () {};
     }
 
     /**

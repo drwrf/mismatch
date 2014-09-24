@@ -4,26 +4,34 @@ namespace Mismatch\ORM;
 
 use Mismatch\Entity;
 use Mismatch\Metadata;
+use Mismatch\Attr\AttrInterface;
 use Mismatch\ORM\Attr\Primary;
 use Mismatch\ORM\Attr\Relationship;
+use UnexpectedValueException;
 
 class Mapper
 {
     /**
-     * @var  string  $class
+     * @var  string
      */
     private $class;
 
     /**
-     * @var  Mismatch\Attrs  $attrs
+     * @var  Mismatch\Attrs
      */
     private $attrs;
 
     /**
+     * @var  Mismatch\ORM\Query
+     */
+    private $query;
+
+    /**
      * Constructor.
      *
-     * @param  string          $class
-     * @param  Mismatch\Attrs  $attrs
+     * @param  string              $class
+     * @param  Mismatch\Attrs      $attrs
+     * @param  Mismatch\ORM\Query  $query
      */
     public function __construct($class, $attrs)
     {
@@ -39,44 +47,81 @@ class Mapper
      */
     public function serialize($model)
     {
-        $tx = new Transaction();
-        $related = [];
-        $data = [];
+        $query = $this->query();
 
-        foreach ($this->attrs as $attr) {
-            // Allow relationships to handle saving in their own special way
-            if ($attr instanceof Relationship) {
-                $related[] = $attr;
-                continue;
+        // Run this entire thing inside a transaction, so we
+        // can roll it back in case of a failure.
+        return $query->transactional(function() use ($model) {
+            $before = [];
+            $after = [];
+            $data = [];
+
+            foreach ($this->attrs as $attr) {
+                $name = $attr->name;
+                $key = $attr->key;
+
+                // Only serialize changed values or values on new models.
+                // There's no need to make any changes otherwise.
+                if (!$model->isNew() && !$model->changed($name)) {
+                    continue;
+                }
+
+                $diff = $model->diff($name);
+
+                // Run through the various serialization strategies
+                switch ($attr->serialize) {
+                    // We alway want to change the value, so place it on
+                    // the main set of data to be saved.
+                    case AttrInterface::SERIALIZE_VALUE;
+                        $data[$key] = $attr->serialize($model, $diff);
+                        break;
+
+                    // We want to run a callback before the model is saved,
+                    // so return a closure that we'll run inside the transaction.
+                    case AttrInterface::SERIALIZE_BEFORE;
+                        $before[] = $attr->serialize($model, $diff);
+                        break;
+
+                    // We want to run a callback after the model is saved,
+                    // so return a closure that we'll run inside the transaction.
+                    case AttrInterface::SERIALIZE_AFTER;
+                        $after[] = $attr->serialize($model, $diff);
+                        break;
+
+                    case AttrInterface::SERIALIZE_NONE;
+                        continue;
+
+                    default:
+                        throw new UnexpectedValueException();
+                }
             }
 
-            $name = $attr->name;
-            $key = $attr->key;
-
-            // New records get all their special defaults and what-not
-            // stored. While already persisted records only need changes.
-            if ($model->isNew() || $model->changed($name)) {
-                $data[$key] = $attr->serialize($model, $model->read($name));
+            // Run through all of the pre-queries.
+            foreach ($before as $fn) {
+                if ($fn) {
+                    $fn($this->query(), $model);
+                }
             }
-        }
 
-        $query = $this->query()->set($data);
+            // Run the main save.
+            $query = $this->query();
+            $query->set($data);
 
-        // Perform the update first in line.
-        $tx->push(function() use ($model, $query) {
             if (!$model->isNew()) {
-                $query->update($model->id());
+                $query->update($model->pk());
             } else {
-                $query->insert();
+                $model->setPk($query->insert());
             }
+
+            // Run through all of the post-queries.
+            foreach ($after as $fn) {
+                if ($fn) {
+                    $fn($this->query(), $model);
+                }
+            }
+
+            // TODO Mark the model as saved
         });
-
-        // Now run through all relationships and let them do their thang.
-        foreach ($related as $attr) {
-            $attr->serialize($model, $tx);
-        }
-
-        return $tx->commit();
     }
 
     /**

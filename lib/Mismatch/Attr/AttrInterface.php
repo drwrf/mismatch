@@ -4,6 +4,11 @@ namespace Mismatch\Attr;
 
 interface AttrInterface
 {
+    const SERIALIZE_NONE = 0;
+    const SERIALIZE_VALUE = 1;
+    const SERIALIZE_BEFORE = 2;
+    const SERIALIZE_AFTER = 3;
+
     /**
      * Called when writing a value to the model in PHP land.
      *
@@ -37,8 +42,8 @@ interface AttrInterface
      * be turned into a native type for the datasource.
      *
      * @param   Mismatch\Model  $model
-     * @param   mixed           $value
+     * @param   array|false     $diff
      * @return  mixed
      */
-    public function serialize($model, $value);
+    public function serialize($model, $diff);
 }

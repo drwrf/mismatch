@@ -107,7 +107,28 @@ class Entity
     }
 
     /**
-     * Mark the entity as persisted, merging all changes with
-     * those 
+     * Returns the diff of a value.
+     *
+     * @return  array|false
      */
+    public function diff($name)
+    {
+        if (!$this->changed($name)) {
+            return null;
+        }
+
+        if (array_key_exists($name, $this->data)) {
+            $old = $this->data[$name];
+        } else {
+            $old = null;
+        }
+
+        if (array_key_exists($name, $this->changes)) {
+            $new = $this->changes[$name];
+        } else {
+            $new = null;
+        }
+
+        return [$old, $new];
+    }
 }

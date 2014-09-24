@@ -80,17 +80,28 @@ trait ORM
      */
     public function isNew()
     {
-        return !$this->id();
+        return !$this->pk();
     }
 
     /**
-     * Returns the id of the record.
+     * Returns the primary key of the record.
      *
      * @return  mixed
      */
-    public function id()
+    public function pk()
     {
         return $this->__get(static::metadata()['pk']);
+    }
+
+    /**
+     * Sets the id on the record
+     *
+     * @param   mixed  $pk
+     * @return  mixed
+     */
+    public function setPk($pk)
+    {
+        return $this->__set(static::metadata()['pk'], $pk);
     }
 
     /**
