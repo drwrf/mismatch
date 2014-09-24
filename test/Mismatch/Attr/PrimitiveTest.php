@@ -34,4 +34,27 @@ class PrimitiveTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($subject->serialize($model, 'foo'));
         $this->assertNotNull($subject->deserialize($model, 'foo'));
     }
+
+    /**
+     * @dataProvider  allTypes
+     */
+    public function testCast_nullable($subject, $model)
+    {
+        $subject->nullable = true;
+
+        $this->assertNull($subject->read($model, null));
+        $this->assertNull($subject->write($model, null));
+        $this->assertNull($subject->serialize($model, null));
+        $this->assertNull($subject->deserialize($model, null));
+    }
+
+    /**
+     * @dataProvider  allTypes
+     */
+    public function testCast_default($subject, $model)
+    {
+        $subject->default = 'foo';
+
+        $this->assertEquals('foo', $subject->read($model, null));
+    }
 }

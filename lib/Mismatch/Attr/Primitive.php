@@ -10,7 +10,7 @@ abstract class Primitive extends Base
     public function read($model, $value)
     {
         if ($value === null) {
-            return !$this->nullable ? $this->getDefault($model) : null;
+            return $this->nullable ? null : $this->getDefault($model);
         }
 
         return $this->cast($value);
@@ -45,6 +45,10 @@ abstract class Primitive extends Base
      */
     public function deserialize($result, $value)
     {
+        if ($value === null && $this->nullable) {
+            return null;
+        }
+
         return $this->cast($value);
     }
 
