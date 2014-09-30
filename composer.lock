@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a0d73b930d6bd84ee938d2b5df66ea68",
+    "hash": "4c38ece4ea63b3a49fd1d4a4c2c436be",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -490,12 +490,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/drwrf/mismatch-db.git",
-                "reference": "9ad0fbcfc5258e4f0faa5c864ba8d9d4d1dfe0b0"
+                "reference": "b086697c296e869a8d996fdeeef92b844bbd715e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drwrf/mismatch-db/zipball/9ad0fbcfc5258e4f0faa5c864ba8d9d4d1dfe0b0",
-                "reference": "9ad0fbcfc5258e4f0faa5c864ba8d9d4d1dfe0b0",
+                "url": "https://api.github.com/repos/drwrf/mismatch-db/zipball/b086697c296e869a8d996fdeeef92b844bbd715e",
+                "reference": "b086697c296e869a8d996fdeeef92b844bbd715e",
                 "shasum": ""
             },
             "require": {
@@ -537,7 +537,7 @@
                 }
             ],
             "description": "A simple library for complex SQL.",
-            "time": "2014-09-28 19:39:56"
+            "time": "2014-09-30 02:58:50"
         },
         {
             "name": "pimple/pimple",
@@ -1217,7 +1217,8 @@
                 },
                 {
                     "name": "Adam Harvey",
-                    "email": "aharvey@php.net"
+                    "email": "aharvey@php.net",
+                    "role": "Lead"
                 },
                 {
                     "name": "Bernhard Schussek",

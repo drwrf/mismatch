@@ -35,16 +35,15 @@ trait Model
     private $attrs;
 
     /**
-     * @param   array  $data
+     * @param   Entity|array  $entity
      */
-    public function __construct($data = [])
+    public function __construct($entity = [])
     {
-        $this->entity = new Entity();
-
-        // TODO: Allow whitelisting this as it's kind of a security hole
-        foreach ($data as $key => $value) {
-            $this->__set($key, $value);
+        if (!($entity instanceof Entity)) {
+            $entity = new Entity($entity);
         }
+
+        $this->entity = $entity;
     }
 
     /**
@@ -154,6 +153,14 @@ trait Model
     public function diff($name)
     {
         return $this->entity->diff($name);
+    }
+
+    /**
+     * @return  bool
+     */
+    public function isPersisted()
+    {
+        return $this->entity->isPersisted();
     }
 
     /**

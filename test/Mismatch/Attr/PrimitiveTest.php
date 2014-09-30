@@ -31,7 +31,7 @@ class PrimitiveTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertNotNull($subject->read($model, 'foo'));
         $this->assertNotNull($subject->write($model, 'foo'));
-        $this->assertNotNull($subject->serialize($model, 'foo'));
+        $this->assertNotNull($subject->serialize($model, 'foo', 'foo'));
         $this->assertNotNull($subject->deserialize($model, 'foo'));
     }
 
@@ -44,7 +44,7 @@ class PrimitiveTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNull($subject->read($model, null));
         $this->assertNull($subject->write($model, null));
-        $this->assertNull($subject->serialize($model, null));
+        $this->assertNull($subject->serialize($model, null, null));
         $this->assertNull($subject->deserialize($model, null));
     }
 

@@ -51,9 +51,9 @@ abstract class Relationship extends Base
     /**
      * {@inheritDoc}
      */
-    public function serialize($model, $diff)
+    public function serialize($model, $old, $new)
     {
-        return function () {};
+        return;
     }
 
     /**

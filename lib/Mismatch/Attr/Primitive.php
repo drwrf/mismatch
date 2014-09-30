@@ -2,6 +2,8 @@
 
 namespace Mismatch\Attr;
 
+use Mismatch\Attr\AttrInterface;
+
 abstract class Primitive extends Base
 {
     /**
@@ -36,14 +38,13 @@ abstract class Primitive extends Base
     /**
      * {@inheritDoc}
      */
-    public function serialize($model, $diff)
+    public function serialize($model, $old, $new)
     {
-        // We got back either no change, or a change to null.
-        if (!$diff || $diff[1] === null) {
+        if ($new === null) {
             return $this->nullable ? null : $this->getDefault($model);
         }
 
-        return $this->cast($diff[1]);
+        return $this->cast($new);
     }
 
     /**

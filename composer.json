@@ -8,11 +8,17 @@
             "email": "hi@drwrf.com"
         }
     ],
+
+    "scripts": {
+        "test": "phpunit test"
+    },
+
     "autoload": {
         "psr-0": {
             "Mismatch\\": [ "lib/", "test/" ]
         }
     },
+
     "require": {
         "php": ">=5.4",
         "pimple/pimple": "3.0.*@dev",
@@ -20,6 +26,7 @@
         "doctrine/inflector": "1.0.*@dev",
         "drwrf/mismatch-db": "0.2.*@dev"
     },
+
     "require-dev": {
         "phpunit/phpunit": "4.0.*@dev",
         "phpunit/php-code-coverage": "2.0.*@dev",

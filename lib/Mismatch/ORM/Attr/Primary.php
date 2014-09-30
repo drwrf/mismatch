@@ -3,6 +3,7 @@
 namespace Mismatch\ORM\Attr;
 
 use Mismatch\Attr\Primitive;
+use Mismatch\Attr\AttrInterface;
 use DomainException;
 
 class Primary extends Primitive
@@ -16,6 +17,11 @@ class Primary extends Primitive
      * {@inheritDoc}
      */
     public $nullable = true;
+
+    /**
+     * {@inheritDoc}
+     */
+    public $serialize = AttrInterface::SERIALIZE_NONE;
 
     /**
      * {@inheritDoc}

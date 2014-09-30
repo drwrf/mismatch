@@ -42,8 +42,9 @@ interface AttrInterface
      * be turned into a native type for the datasource.
      *
      * @param   Mismatch\Model  $model
-     * @param   array|false     $diff
+     * @param   mixed           $old
+     * @param   mixed           $new
      * @return  mixed
      */
-    public function serialize($model, $diff);
+    public function serialize($model, $old, $new);
 }

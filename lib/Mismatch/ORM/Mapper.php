@@ -40,18 +40,19 @@ class Mapper
     }
 
     /**
-     * Given a model, this should turn it into a saveable array of data.
+     * Given a model this should save it and all its
+     * relationships.
      *
      * @param   Mismatch\Model  $model
      * @return  array
      */
-    public function serialize($model)
+    public function save($model)
     {
-        $query = $this->query();
+        $conn = $this->conn();
 
         // Run this entire thing inside a transaction, so we
         // can roll it back in case of a failure.
-        return $query->transactional(function() use ($model) {
+        return $conn->transactional(function() use ($model) {
             $before = [];
             $after = [];
             $data = [];
@@ -60,13 +61,13 @@ class Mapper
                 $name = $attr->name;
                 $key = $attr->key;
 
-                // Only serialize changed values or values on new models.
-                // There's no need to make any changes otherwise.
-                if (!$model->isNew() && !$model->changed($name)) {
+                // Get a diff of the attribute. If there's no valuable
+                // diff to return we'll simply skip the field.
+                $diff = $model->diff($name);
+
+                if (!$diff) {
                     continue;
                 }
-
-                $diff = $model->diff($name);
 
                 // Run through the various serialization strategies
                 switch ($attr->serialize) {
@@ -78,7 +79,7 @@ class Mapper
 
                     // We want to run a callback before the model is saved,
                     // so return a closure that we'll run inside the transaction.
-                    case AttrInterface::SERIALIZE_BEFORE;
+                    case Transaction::SERIALIZE_BEFORE;
                         $before[] = $attr->serialize($model, $diff);
                         break;
 
@@ -106,12 +107,7 @@ class Mapper
             // Run the main save.
             $query = $this->query();
             $query->set($data);
-
-            if (!$model->isNew()) {
-                $query->update($model->pk());
-            } else {
-                $model->setPk($query->insert());
-            }
+            $query->save($model->pk());
 
             // Run through all of the post-queries.
             foreach ($after as $fn) {
@@ -119,8 +115,6 @@ class Mapper
                     $fn($this->query(), $model);
                 }
             }
-
-            // TODO Mark the model as saved
         });
     }
 
@@ -131,23 +125,34 @@ class Mapper
      * @param  array  $result
      * @return Mismatch\Model
      */
-    public function deserialize(array $result)
+    public function prepare(array $result)
     {
-        foreach ($this->attrs as $attr) {
-            // XXX: This might cause issues, maybe there's a need
-            // for a no-value object to track this case.
-            if (!isset($result[$attr->key])) {
-                $result[$attr->key] = null;
-            }
+        $entity = new Entity($result);
 
-            $result[$attr->name] = $attr->deserialize($result, $result[$attr->key]);
+        foreach ($this->attrs as $attr) {
+            // Here we allow attributes a chance to deserialize
+            // values. This is useful for complex types that want
+            // to perform custom type coercion on values.
+            $entity->write($attr->name, $attr->deserialize(
+                $entity, $entity->read($attr->key)));
         }
 
-        return new $this->class($result);
+        // Since this is a result, we can count it as persisted.
+        $entity->markAsPersisted();
+
+        return new $this->class($entity);
     }
 
     /**
-     * @return  Mismatch\ORM\Query
+     * @return  Mismatch\DB\Connection
+     */
+    private function conn()
+    {
+        return Metadata::get($this->class)['conn'];
+    }
+
+    /**
+     * @return  Mismatch\DB\Query
      */
     private function query()
     {

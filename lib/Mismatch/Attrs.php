@@ -39,6 +39,11 @@ class Attrs implements IteratorAggregate
     private $attrs = [];
 
     /**
+     * @var  string
+     */
+    private $pk = 'id';
+
+    /**
      * @var  Mismatch\Metadata
      */
     private $metadata;

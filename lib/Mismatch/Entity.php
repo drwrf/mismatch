@@ -15,6 +15,11 @@ class Entity
     private $changes = [];
 
     /**
+     * @var  bool  Whether or not the entity has been persisted.
+     */
+    private $persisted = false;
+
+    /**
      * @param  array  $data  The original set of data for the entity.
      */
     public function __construct($data = [])
@@ -113,7 +118,10 @@ class Entity
      */
     public function diff($name)
     {
-        if (!$this->changed($name)) {
+        // Return no diff when nothing has changed and the model isn't
+        // persisted. This is useful for new models who need to save
+        // initial values even if they weren't technically "changed".
+        if ($this->persisted && !$this->changed($name)) {
             return null;
         }
 
@@ -129,6 +137,26 @@ class Entity
             $new = null;
         }
 
-        return [$old, $new];
+        // Non-persisted entities may have never had changes, but
+        // we still want to consider initial values a diff.
+        if (!$this->persisted && $new === null) {
+            return [null, $old];
+        } else {
+            return [$old, $new];
+        }
+    }
+
+    /**
+     * Marks the entity as persisted.
+     */
+    public function markPersisted()
+    {
+        $this->persisted = true;
+
+        // The entity is persisted, so turn all changes into
+        // the new, canonical version of the data.
+        $this->data = array_merge($this->data, $this->changes);
+
+        return $this;
     }
 }

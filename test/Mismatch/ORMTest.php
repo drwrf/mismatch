@@ -11,12 +11,12 @@ class ORMTest extends \PHPUnit_Framework_TestCase
 
     public function test_usingORM_setsTable()
     {
-        $this->assertEquals('mismatch_model_orm_mock', $this->metadata['table']);
+        $this->assertEquals('mismatch_model_orm_mocks', $this->metadata['table']);
     }
 
     public function test_usingORM_setsPk()
     {
-        $this->assertEquals('id', $this->metadata['pk']);
+        $this->assertEquals('id', $this->metadata['pk']->name);
     }
 }
 

@@ -2,7 +2,9 @@
 
 namespace Mismatch;
 
+use Mismatch\DB\Connection;
 use Mismatch\ORM\Attr\Primary;
+use DomainException;
 
 trait ORM
 {
@@ -18,11 +20,11 @@ trait ORM
             return Inflector::tableize($m->getClass());
         };
 
-        // The primary key of the model, by name.
-        $m['pk'] = function ($m) {
+        // The primary key of the model, as an attribute.
+        $m['pk'] = function($m) {
             foreach ($m['attrs'] as $attr) {
                 if ($attr instanceof Primary) {
-                    return $attr->name;
+                    return $attr;
                 }
             }
 
@@ -35,14 +37,13 @@ trait ORM
         };
 
         // The connection the model will use to talk to the database.
-        $m['connection'] = $m->factory(function ($m) {
-            return ORM\Connector::connect($m['credentials']);
+        $m['conn'] = $m->factory(function ($m) {
+            return Connection::create($m['credentials']);
         });
 
-        // The query builder used for SELECTs
+        // The query builder used for finding and modifying data
         $m['query'] = $m->factory(function($m) {
-            $query = new $m['query:class']($m['connection'], $m['pk']);
-            $query->from([$m['table'] => $m['name']]);
+            $query = new $m['query:class']($m['conn'], $m['table'], $m['pk']);
             $query->setMapper($m['mapper']);
 
             return $query;
@@ -51,12 +52,12 @@ trait ORM
         // The class to use for query building.
         $m['query:class'] = 'Mismatch\ORM\Query';
 
-        // The mapper used to serialize and deserialize records.
+        // The mapper instance for serialization and deserialization.
         $m['mapper'] = function($m) {
             return new $m['mapper:class']($m->getClass(), $m['attrs']);
         };
 
-        // The class to use for mapping results.
+        // The class to use for mapping data.
         $m['mapper:class'] = 'Mismatch\ORM\Mapper';
     }
 
@@ -76,32 +77,13 @@ trait ORM
     }
 
     /**
-     * @return  bool
-     */
-    public function isNew()
-    {
-        return !$this->pk();
-    }
-
-    /**
      * Returns the primary key of the record.
      *
      * @return  mixed
      */
     public function pk()
     {
-        return $this->__get(static::metadata()['pk']);
-    }
-
-    /**
-     * Sets the id on the record
-     *
-     * @param   mixed  $pk
-     * @return  mixed
-     */
-    public function setPk($pk)
-    {
-        return $this->__set(static::metadata()['pk'], $pk);
+        return $this->__get(static::metadata()['pk']->name);
     }
 
     /**
@@ -111,7 +93,11 @@ trait ORM
      */
     public function save()
     {
-        return static::metadata()['mapper']->serialize($this);
+        if ($this->isPersisted()) {
+            return static::metadata()['mapper']->update($this);
+        } else {
+            return static::metadata()['mapper']->create($this);
+        }
     }
 
     /**
@@ -121,7 +107,7 @@ trait ORM
      */
     public function destroy()
     {
-        return (bool) static::metadata()['query']->delete($this->id());
+        return (bool) static::metadata()['mapper']->destroy($this);
     }
 }
 
