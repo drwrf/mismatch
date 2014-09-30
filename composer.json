@@ -4,7 +4,7 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "frwrd",
+            "name": "♥",
             "email": "hi@drwrf.com"
         }
     ],
@@ -14,8 +14,14 @@
     },
 
     "autoload": {
-        "psr-0": {
-            "Mismatch\\": [ "lib/", "test/" ]
+        "psr-4": {
+            "Mismatch\\": [ "lib/" ]
+        }
+    },
+
+    "autoload-dev": {
+        "psr-4": {
+            "Mismatch\\": [ "test/" ]
         }
     },
 
